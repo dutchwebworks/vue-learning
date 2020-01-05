@@ -1,7 +1,7 @@
 {
   "name": "vue-learning-vue-cli-3",
   "description": "SPA learning with Vue, Vuex and vue-router",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "Dennis Burger <dennis@dutchwebworks.nl>",
   "license": "MIT",
   "private": true,
