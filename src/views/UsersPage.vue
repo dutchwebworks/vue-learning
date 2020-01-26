@@ -24,7 +24,7 @@
         <div class="users__listing">
             <ul class="users__list">
                 <li 
-                    v-for="user in usersRef"
+                    v-for="user in users"
                     :key="user['.key']"
                     class="users__list-item">
                     {{ user }}
@@ -43,10 +43,11 @@ export default {
             username: "",
             email: "",
             age: null,
+            
         }
     },
     firebase: {
-        usersRef
+        users: usersRef
     },
     methods: {
         onSubmit() {
