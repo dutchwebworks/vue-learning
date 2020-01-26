@@ -86,6 +86,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "method-prop-page" */ "@/views/MethodPropPage")
   },
   {
+    path: "/users",
+    name: "UsersPage",
+    component: () => import(/* webpackChunkName: "method-user-page" */ "@/views/UsersPage")
+  },
+  {
     path: "*",
     component: () => import(/* webpackChunkName: "error-page" */ "@/views/Error404Page")
   }

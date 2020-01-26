@@ -1,3 +1,4 @@
+import "./firebase";
 import Vue from "vue";
 import App from "./App.vue";
 import Vuelidate from "vuelidate";
@@ -6,17 +7,18 @@ import router from "./router";
 import { store } from "./store";
 import FancyBackground from "@/plugins/FancyBackground";
 import ModalConfirm from "@/plugins/ModalConfirm";
+import { firestorePlugin } from 'vuefire'
 
 import '@/scss/style.scss'; // https://vueschool.io/articles/vuejs-tutorials/globally-load-sass-into-your-vue-js-applications/
 
 Vue.config.productionTip = false;
 
+Vue.use(firestorePlugin);
 Vue.use(Vuelidate);
 Vue.use(FancyBackground);
 Vue.use(ModalConfirm, {
   // bodyClass: "has-modal-open"
 });
-
 
 Vue.filter("euroCurrency", function(price){
 	return Number(price).toLocaleString("nl-NL", {
