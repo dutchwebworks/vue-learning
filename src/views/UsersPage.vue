@@ -21,20 +21,38 @@
             </form>            
         </fieldset>
 
-        <div class="users__listing">
-            <ul class="users__list">
-                <li 
-                    v-for="user in users"
-                    :key="user['.key']"
-                    class="users__list-item">
-                    {{ user }}
-                </li>
-            </ul>
-        </div>
+        <table cellspacing="0" class="users__listing">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>E-mail</th>
+                    <th>Age</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="(user, index) in users"
+                    :key="index">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>
+                        <button 
+                            class="users__delete-button"
+                            @click="deleteUser(user)"
+                            title="Delete this user">
+                            &times;
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </main>
 </template>
 
 <script>
+import { db } from "@/firebase";
 import { usersRef } from "@/firebase";
 
 export default {
@@ -43,11 +61,14 @@ export default {
             username: "",
             email: "",
             age: null,
+            users: []
             
         }
     },
-    firebase: {
-        users: usersRef
+    created() {
+        usersRef.on("value", snapshot => {
+            this.users = snapshot.val();
+        });
     },
     methods: {
         onSubmit() {
@@ -65,6 +86,9 @@ export default {
             this.email = "";
             this.age = null;
             this.$refs.username.focus();
+        },
+        deleteUser(user) {
+            // usersRef.child(user[".key"]).remove();
         }
     }
 }
@@ -93,7 +117,54 @@ export default {
 // Element
 // ---------------------------------------------
 
+.users__fieldset {
+    padding: 10px 15px;
+    border: 3px solid map-get($colors, 01);
+}
 
+.users__legend {
+    font-weight: 300;
+    font-size: 26px;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: map-get($colors, 01);
+	font-family: "Roboto", sans-serif;
+}
+
+.users__listing {
+    width: 100%;
+    margin-top: 40px;
+    font-weight: 300;
+	font-family: "Roboto", sans-serif;
+    border: 3px solid map-get($colors, 02);
+
+    tr:nth-child(even) td {
+        color: white;
+        background-color: map-get($colors, 02);
+    }
+
+    th,
+    td {
+        padding: 10px 15px;
+    }
+
+    th {
+        font-size: 26px;
+        text-align: left;
+        color: white;
+        background-color: map-get($colors, 02);
+    }    
+
+    td {
+        color: map-get($colors, 03);
+    }
+}
+
+.users__delete-button {
+    font-size: 26px;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
 // ---------------------------------------------
 // Modifier
