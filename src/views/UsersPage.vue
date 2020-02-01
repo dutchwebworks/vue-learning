@@ -21,6 +21,8 @@
             </form>            
         </fieldset>
 
+        <h2 class="heading">Firebase realtime database</h2>
+
         <table cellspacing="0" class="users__listing">
             <thead>
                 <tr>
@@ -39,7 +41,7 @@
                     <td>{{ user.age }}</td>
                     <td>
                         <button 
-                            class="users__delete-button"
+                            class="users__delete-button button button--02"
                             @click="deleteUser(user)"
                             title="Delete this user">
                             &times;
@@ -61,13 +63,14 @@ export default {
             username: "",
             email: "",
             age: null,
-            users: []
-            
+            users: []            
         }
     },
     created() {
-        usersRef.on("value", snapshot => {
-            this.users = snapshot.val();
+        usersRef.on("child_added", snapshot => this.users.push({...snapshot.val(), id: snapshot.key }));
+        usersRef.on("child_removed", snapshot => {
+            const deletedUser = this.users.find(user => user.id = snapshot.key);
+            this.users.splice(this.users.indexOf(deletedUser), 1);
         });
     },
     methods: {
@@ -88,7 +91,9 @@ export default {
             this.$refs.username.focus();
         },
         deleteUser(user) {
-            // usersRef.child(user[".key"]).remove();
+            if(confirm("Delete user with username: " + user.username + "?") == true) {
+                usersRef.child(user.id).remove();
+            }
         }
     }
 }
@@ -139,8 +144,7 @@ export default {
     border: 3px solid map-get($colors, 02);
 
     tr:nth-child(even) td {
-        color: white;
-        background-color: map-get($colors, 02);
+        background-color: map-get($colors, 05);
     }
 
     th,
