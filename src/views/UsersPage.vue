@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="(user, index) in users"
+                    v-for="(user) in users"
                     :key="user.id">
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
