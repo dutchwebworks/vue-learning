@@ -195,25 +195,13 @@ export default {
             });
 
             this.cancelEditUser();
-        },
-        deleteUser(user) {
-            if(confirm("Delete user with username: " + user.username + "?") == true) {
-                usersRef.child(user.id).remove();
-            }
-        },
+        },        
         editUser(user) {
             this.editingUser = user;
             this.username = user.username;
             this.email = user.email;
             this.age = user.age;
-        },
-        cancelEditUser() {
-            this.editingUser = null;
-            this.username = "";
-            this.email = "";
-            this.age = null;
-            this.$refs.username.focus();
-        },
+        },        
         updateUser() {
             usersRef.child(this.editingUser.id).update({
                 username: this.username,
@@ -222,6 +210,19 @@ export default {
             });
 
             this.cancelEditUser();
+        },
+        deleteUser(user) {
+            if(confirm("Delete user with username: " + user.username + "?") == true) {
+                usersRef.child(user.id).remove();
+            }
+        },
+        cancelEditUser() {
+            this.editingUser = null;
+            this.username = "";
+            this.email = "";
+            this.age = null;
+            this.$refs.username.focus();
+            this.$nextTick(() => { this.$v.$reset() })
         }
     },
     validations: {
