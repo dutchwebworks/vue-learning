@@ -2,7 +2,14 @@
     <main class="users">
         <h1 class="heading">Users</h1>
 
-        <table cellspacing="0" class="users__listing">
+        <p
+            v-if="users.length == 0"
+            class="users__loading paragraph">Loading users from Firebase &hellip;</p>
+
+        <table            
+            v-else
+            cellspacing="0"
+            class="users__listing">
             <thead>
                 <tr>
                     <th>Username</th>
