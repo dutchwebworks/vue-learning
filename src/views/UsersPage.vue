@@ -1,27 +1,6 @@
 <template>
     <main class="users">
-        <h1 class="heading">Users page</h1>
-
-        <fieldset class="users__fieldset">
-            <legend class="users__legend paragraph">Manage users</legend>
-
-            <form 
-                @submit.prevent="onSubmit"
-                class="users__form">
-                <label for="username" class="users__labels paragraph">Username:</label>
-                <input id="username" ref="username" type="text" v-model="username" class="users__input paragraph" required>
-                
-                <label for="email" class="users__labels paragraph">E-mail:</label>
-                <input id="email" type="text" v-model="email" class="users__input paragraph" required>                
-
-                <label for="age" class="users__labels paragraph">Age:</label>
-                <input id="age" type="number" v-model.number="age" class="users__input paragraph" required>
-
-                <input type="submit" value="Add" class="button button--01">
-            </form>            
-        </fieldset>
-
-        <h2 class="heading">Firebase realtime database</h2>
+        <h1 class="heading">Users</h1>
 
         <table cellspacing="0" class="users__listing">
             <thead>
@@ -35,11 +14,20 @@
             <tbody>
                 <tr
                     v-for="(user, index) in users"
-                    :key="index">
+                    :key="user.id">
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.age }}</td>
                     <td>
+                        <button 
+                            class="users__delete-button button button--01"
+                            @click="editUser(user)"
+                            title="Edit this user">
+                            Edit
+                        </button>
+
+                        &nbsp;
+
                         <button 
                             class="users__delete-button button button--02"
                             @click="deleteUser(user)"
@@ -50,6 +38,54 @@
                 </tr>
             </tbody>
         </table>
+
+        <h2 class="sub-heading">Simple Firebase CRUD app.</h2>
+
+        <fieldset class="users__fieldset">
+            <legend class="users__legend paragraph">Manage users</legend>
+
+            <form 
+                @submit.prevent="onSubmit"
+                class="users__form">
+                <label for="username" class="users__labels paragraph">Username:</label>
+                <input id="username" ref="username" type="text" v-model="username" class="users__input paragraph" required>
+                
+                <label for="email" class="users__labels paragraph">E-mail:</label>
+                <input id="email" type="email" v-model="email" class="users__input paragraph" required>                
+
+                <label for="age" class="users__labels paragraph">Age:</label>
+                <input id="age" type="number" v-model.number="age" class="users__input paragraph" required>
+
+                <div 
+                    v-if="!editingUser"
+                    class="users__form-buttons">
+                    <input                    
+                        type="submit"
+                        value="Add"
+                        class="button button--01">
+                </div>
+                
+                <div 
+                    v-else
+                    class="users__form-buttons">   
+                    <button
+                        @click="updateUser"
+                        value="Update"
+                        class="button button--02">
+                        Update
+                    </button>
+
+                    &nbsp;
+
+                    <button
+                        @click="cancelEditUser"
+                        value="Cancel"
+                        class="button button--01">
+                        Cancel
+                    </button>
+                </div>
+            </form>            
+        </fieldset>
     </main>
 </template>
 
@@ -63,14 +99,24 @@ export default {
             username: "",
             email: "",
             age: null,
-            users: []            
+            users: [],
+            editingUser: null
+                     
         }
     },
     created() {
         usersRef.on("child_added", snapshot => this.users.push({...snapshot.val(), id: snapshot.key }));
+
         usersRef.on("child_removed", snapshot => {
-            const deletedUser = this.users.find(user => user.id = snapshot.key);
+            const deletedUser = this.users.find(user => user.id === snapshot.key);
             this.users.splice(this.users.indexOf(deletedUser), 1);
+        });
+
+        usersRef.on("child_changed", snapshot => {
+            const updatedUser = this.users.find(user => user.id === snapshot.key);
+            updatedUser.username = snapshot.val().username;
+            updatedUser.email = snapshot.val().email;
+            updatedUser.age = snapshot.val().age;
         });
     },
     methods: {
@@ -82,18 +128,34 @@ export default {
                 edit: false
             });
 
-            this.resetFields();
-        },
-        resetFields() {
-            this.username = "";
-            this.email = "";
-            this.age = null;
-            this.$refs.username.focus();
+            this.cancelEditUser();
         },
         deleteUser(user) {
             if(confirm("Delete user with username: " + user.username + "?") == true) {
                 usersRef.child(user.id).remove();
             }
+        },
+        editUser(user) {
+            this.editingUser = user;
+            this.username = user.username;
+            this.email = user.email;
+            this.age = user.age;
+        },
+        cancelEditUser() {
+            this.editingUser = null;
+            this.username = "";
+            this.email = "";
+            this.age = null;
+            this.$refs.username.focus();
+        },
+        updateUser() {
+            usersRef.child(this.editingUser.id).update({
+                username: this.username,
+                email: this.email,
+                age: this.age
+            });
+
+            this.cancelEditUser();
         }
     }
 }
@@ -168,6 +230,10 @@ export default {
     font-size: 26px;
     border-radius: 8px;
     cursor: pointer;
+}
+
+.users__form-buttons {
+    grid-column: span 2;
 }
 
 // ---------------------------------------------
