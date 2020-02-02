@@ -47,19 +47,84 @@
             <form 
                 @submit.prevent="onSubmit"
                 class="users__form">
-                <label for="username" class="users__labels paragraph">Username:</label>
-                <input id="username" ref="username" type="text" v-model="username" class="users__input paragraph" required>
-                
-                <label for="email" class="users__labels paragraph">E-mail:</label>
-                <input id="email" type="email" v-model="email" class="users__input paragraph" required>                
+                <label
+                    for="username"
+                    class="users__labels paragraph">
+                    Username:
+                </label>
 
-                <label for="age" class="users__labels paragraph">Age:</label>
-                <input id="age" type="number" v-model.number="age" class="users__input paragraph" required>
+                <input
+                    @blur="$v.username.$touch()"
+                    id="username"
+                    ref="username"
+                    type="text"
+                    v-model="username"
+                    class="users__input paragraph"
+                    required>
+
+                <small
+                    class="users__form-error"
+                    v-if="$v.username.$error">
+                    Please enter your username
+                </small>
+
+                <small
+                    class="users__form-error"
+                    v-if="!$v.username.minLen">
+                    Name must be at least {{ $v.username.$params.minLen.min }} characters long
+                </small>
+                
+                <label
+                    for="email"
+                    class="users__labels paragraph">
+                    E-mail:
+                </label>
+
+                <input
+                    @blur="$v.email.$touch()"
+                    id="email"
+                    type="email"
+                    v-model="email"
+                    class="users__input paragraph"
+                    required> 
+
+                <small
+                    class="users__form-error"
+                    v-if="$v.email.$error">
+                    Please enter an e-mail address
+                </small>
+
+                <small 
+                    class="users__form-error"
+                    v-if="!$v.email.email">
+                    Please provide a valid e-mail address
+                </small>            
+
+                <label
+                    for="age"
+                    class="users__labels paragraph">
+                    Age:
+                </label>
+
+                <input
+                    @blur="$v.age.$touch()"
+                    id="age"
+                    type="number"
+                    v-model.number="age"
+                    class="users__input paragraph"
+                    required>
+
+                <small
+                    class="users__form-error"
+                    v-if="$v.age.$error">
+                    Please enter your age
+                </small>
 
                 <div 
                     v-if="!editingUser"
                     class="users__form-buttons">
-                    <input                    
+                    <input  
+                        :disabled="$v.$invalid"        
                         type="submit"
                         value="Add"
                         class="button button--01">
@@ -70,6 +135,7 @@
                     class="users__form-buttons">   
                     <button
                         @click="updateUser"
+                        :disabled="$v.$invalid"  
                         value="Update"
                         class="button button--02">
                         Update
@@ -90,6 +156,7 @@
 </template>
 
 <script>
+import { required, email, minLength } from "vuelidate/lib/validators";
 import { db } from "@/firebase";
 import { usersRef } from "@/firebase";
 
@@ -100,8 +167,7 @@ export default {
             email: "",
             age: null,
             users: [],
-            editingUser: null
-                     
+            editingUser: null                     
         }
     },
     created() {
@@ -156,6 +222,19 @@ export default {
             });
 
             this.cancelEditUser();
+        }
+    },
+    validations: {
+        username: {
+            required,
+			minLen: minLength(2)
+        },
+        email: {
+            required,
+			email
+        },
+        age: {
+            required,
         }
     }
 }
@@ -234,6 +313,16 @@ export default {
 
 .users__form-buttons {
     grid-column: span 2;
+}
+
+.users__form-error {
+    grid-column: 2;
+	display: block;
+    margin: 0;
+	color: red;
+    font-weight: 300;
+	font-family: "Roboto", sans-serif;
+	@include align-self(center);
 }
 
 // ---------------------------------------------
