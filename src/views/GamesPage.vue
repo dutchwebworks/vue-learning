@@ -39,7 +39,7 @@
                     <td>{{ game.isPSN }}</td>
                     <td>{{ game.isPSVR }}</td>
                     <td>{{ game.isSubscriptionBased }}</td>
-                    <td>{{ game.finished }}</td>
+                    <td>{{ game.isFinished }}</td>
                     <td>{{ game.comment }}</td>
                     <td>
                         <button 
@@ -61,6 +61,8 @@
                 </tr>
             </tbody>
         </table>
+
+        <h2 class="sub-heading">Manage games</h2>
         
         <fieldset class="games__fieldset">
             <legend class="games__legend paragraph">Manage games</legend>
@@ -180,7 +182,7 @@
 
                 <input
                     type="checkbox"
-                    v-model="editItem.finished"
+                    v-model="editItem.isFinished"
                     class="games__checkbox">
                 
                 <label
@@ -285,16 +287,16 @@ export default {
             games: [],
             editingGame: null,
             editItem: {
-                title: null,
-                platformId: null,
-                mediaId: null,
-                price: null,
-                purchaseYear: null,
-                publicationYear: null,
+                title: "",
+                platformId: "",
+                mediaId: "",
+                price: "",
+                purchaseYear: "",
+                publicationYear: "",
                 isPSN: false,
                 isPSVR: false,
                 isSubscriptionBased: false,
-                finished: false,
+                isFinished: false,
                 comment: ""
             }            
         }
@@ -319,7 +321,7 @@ export default {
             updatedGame.isPSVR = snapshot.val().isPSVR;
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
-            updatedGame.finished = snapshot.val().finished;
+            updatedGame.isFinished = snapshot.val().isFinished;
             updatedGame.comment = snapshot.val().comment;
         });
     },
@@ -330,21 +332,31 @@ export default {
         },
         editGame(game) {
             this.editingGame = game;
-            this.editItem = game;
+            this.editItem.title = game.title;
+            this.editItem.platformId = game.platformId;
+            this.editItem.mediaId = game.mediaId;
+            this.editItem.price = game.price;
+            this.editItem.purchaseYear = game.purchaseYear;
+            this.editItem.publicationYear = game.publicationYear;
+            this.editItem.isPSN = game.isPSN;
+            this.editItem.isPSVR = game.isPSVR;
+            this.editItem.isSubscriptionBased = game.isSubscriptionBased;
+            this.editItem.isFinished = game.isFinished;
+            this.editItem.comment = game.comment;
         },
         updateGame() {
             gamesRef.child(this.editingGame.id).update({
-                title: this.editingGame.title,
-                platformId: this.editingGame.platformId,
-                mediaId: this.editingGame.mediaId,
-                price: this.editingGame.price,
-                purchaseYear: this.editingGame.purchaseYear,
-                publicationYear: this.editingGame.publicationYear,
-                isPSN: this.editingGame.isPSN,
-                isPSVR: this.editingGame.isPSVR,
-                isSubscriptionBased: this.editingGame.isSubscriptionBased,
-                finished: this.editingGame.finished,
-                comment: this.editingGame.comment
+                title: this.editItem.title,
+                platformId: this.editItem.platformId,
+                mediaId: this.editItem.mediaId,
+                price: this.editItem.price || "",
+                purchaseYear: this.editItem.purchaseYear || "",
+                publicationYear: this.editItem.publicationYear || "",
+                isPSN: this.editItem.isPSN,
+                isPSVR: this.editItem.isPSVR,
+                isSubscriptionBased: this.editItem.isSubscriptionBased,
+                isFinished: this.editItem.isFinished,
+                comment: this.editItem.comment || "",
             });
             this.cancelEditGame();
         },
@@ -355,16 +367,16 @@ export default {
         },
         cancelEditGame() {
             this.editingGame = null;
-            this.editItem.title = null,
-            this.editItem.platformId = null,
-            this.editItem.mediaId = null,
-            this.editItem.price = null,
-            this.editItem.purchaseYear = null,
-            this.editItem.publicationYear = null,
+            this.editItem.title = "",
+            this.editItem.platformId = "",
+            this.editItem.mediaId = "",
+            this.editItem.price = "",
+            this.editItem.purchaseYear = "",
+            this.editItem.publicationYear = "",
             this.editItem.isPSN = false,
             this.editItem.isPSVR = false,
             this.editItem.isSubscriptionBased = false,
-            this.editItem.finished = false,
+            this.editItem.isFinished = false,
             this.editItem.comment = ""
 
             this.$refs.title.focus();
@@ -440,7 +452,7 @@ export default {
 }
 
 .games__delete-button {
-    font-size: 26px;
+    font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -463,7 +475,10 @@ export default {
 // Modifier
 // ---------------------------------------------
 
-
-
+.app__container {
+    max-width: none;
+	margin-left: 4em;
+	margin-right: 4em;
+}
 
 </style>
