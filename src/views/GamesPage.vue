@@ -12,16 +12,19 @@
             class="games__listing">
             <thead>
                 <tr>
+                    <th>Image</th>
                     <th>Title</th>
                     <th>Platform</th>
                     <th>Media</th>
-                    <th>Price</th>
+                    <th>Genre</th>
+                    <th>Purchase price</th>
                     <th>Purchase year</th>
                     <th>Publication year</th>
                     <th>PSN game</th>
                     <th>PSVR game</th>
                     <th>Subscription based</th>
-                    <th>Finished</th>
+                    <th>Finished</th>                    
+                    <th>Wishlist</th>
                     <th>Comment</th>
                     <th>Action</th>
                 </tr>
@@ -30,16 +33,32 @@
                 <tr
                     v-for="game in games"
                     :key="game.id">
-                    <td>{{ game.title }}</td>
-                    <td>{{ game.platformId }}</td>
-                    <td>{{ game.mediaId }}</td>
-                    <td>{{ game.price }}</td>
+                    <td>
+                        <img 
+                            :src="game.posterImg" 
+                            :alt="game.title"
+                            class="games__poster-img">
+                    </td>
+                    <td><strong>{{ game.title }}</strong></td>
+                    <td>{{ platformType[game.platformId].shortTitle }}</td>
+                    <td>{{ mediaType[game.mediaId].title }}</td>
+                    <td>
+                        <ul>
+                            <li 
+                                v-for="genreId in game.genreIds"
+                                :key="genreId">
+                                {{ genreType[genreId].shortTitle }}
+                            </li>
+                        </ul>
+                    </td>
+                    <td>{{ game.purchasePrice | euroCurrency }}</td>
                     <td>{{ game.purchaseYear }}</td>
                     <td>{{ game.publicationYear }}</td>
-                    <td>{{ game.isPSN }}</td>
-                    <td>{{ game.isPSVR }}</td>
-                    <td>{{ game.isSubscriptionBased }}</td>
-                    <td>{{ game.isFinished }}</td>
+                    <td>{{ game.isPSN ? "PSN" : "-" }}</td>
+                    <td>{{ game.isPSVR ? "PSVR" : "-" }}</td>
+                    <td>{{ game.isSubscriptionBased ? "Subscription" : "-" }}</td>
+                    <td>{{ game.isFinished ? "Finished!!" : "Not finished" }}</td>                    
+                    <td>{{ game.isOnWishList ? "Yes" : "-" }}</td>                    
                     <td>{{ game.comment }}</td>
                     <td>
                         <button 
@@ -90,11 +109,11 @@
 
                 <select
                     name="platformId"
-                    v-model="editItem.platformId">
+                    v-model.number="editItem.platformId">
                     <option
-                        v-for="platform in platformType"
-                        :key="platform.id"
-                        :value="platform.id">
+                        v-for="(platform, name, index) in platformType"
+                        :key="index"
+                        :value="name">
                         {{ platform.title }}
                     </option>
                 </select>
@@ -105,24 +124,41 @@
                 </label>
 
                 <select
-                    name="platformId"
-                    v-model="editItem.mediaId">
+                    name="mediaId"
+                    v-model.number="editItem.mediaId">
                     <option
-                        v-for="media in mediaType"
-                        :key="media.id"
-                        :value="media.id">
+                        v-for="(media, name, index) in mediaType"
+                        :key="index"
+                        :value="name">
                         {{ media.title }}
                     </option>
                 </select>
 
                 <label
                     class="games__labels paragraph">
-                    Price:
+                    Genre:
+                </label>
+
+                <select
+                    multiple
+                    name="platformId"
+                    v-model.number="editItem.genreIds">
+                    <option
+                        v-for="(genre, name, index) in genreType"
+                        :key="index"
+                        :value="name">
+                        {{ genre.title }}
+                    </option>
+                </select>
+
+                <label
+                    class="games__labels paragraph">
+                    Purchase price:
                 </label>
 
                 <input
                     type="number"
-                    v-model.number="editItem.price"
+                    v-model.number="editItem.purchasePrice"
                     class="games__input paragraph">
                 
                 <label
@@ -187,12 +223,32 @@
                 
                 <label
                     class="games__labels paragraph">
+                    On wishlist:
+                </label>
+
+                <input
+                    type="checkbox"
+                    v-model="editItem.isOnWishList"
+                    class="games__checkbox">
+                
+                <label
+                    class="games__labels paragraph">
                     Comment:
                 </label>
 
                 <textarea
                     v-model="editItem.comment">
                 </textarea>
+
+                <label
+                    class="games__labels paragraph">
+                    Poster image:
+                </label>
+
+                <input
+                    type="text"
+                    v-model="editItem.posterImg"
+                    class="games__input paragraph">
 
                 <div 
                     v-if="!editingGame"
@@ -235,68 +291,51 @@ import { gamesRef } from "@/firebase";
 export default {
     data() {
         return {
-            platformType: [
-                {
-                    id: 1,
-                    title: "Nintendo Wii Classic",
-                    value: "Wii Classic"
-                },
-                {
-                    id: 2,
-                    title: "Nintendo Wii",
-                    value: "Wii"
-                },
-                {
-                    id: 3,
-                    title: "Sony PlayStation 3",
-                    value: "PS3"
-                },
-                {
-                    id: 4,
-                    title: "Sony PlayStation 4",
-                    value: "PS4"
-                },
-                {
-                    id: 5,
-                    title: "Nintendo Switch",
-                    value: "Switch"
-                },
-                {
-                    id: 6,
-                    title: "Apple iOS",
-                    value: "iOS"
-                },
-                {
-                    id: 7,
-                    title: "Apple Tv",
-                    value: "Apple Tv"
-                }
-            ],
-            mediaType: [
-                {
-                    id: 1,
-                    title: "Digital",
-                    value: "Digital"
-                },
-                {
-                    id: 2,
-                    title: "Physical",
-                    value: "Physical"
-                }
-            ],
+            platformType: {
+                1: { title: "Nintendo Wii Classic", shortTitle: "Wii Classic" },
+                2: { title: "Nintendo Wii", shortTitle: "Wii" },
+                3: { title: "Sony PlayStation 3", shortTitle: "PS3" },
+                4: { title: "Sony PlayStation 4", shortTitle: "PS4" },
+                5: { title: "Nintendo Switch", shortTitle: "Switch" },
+                6: { title: "Apple iOS", shortTitle: "iOS" },
+                7: { title: "Apple Tv", shortTitle: "Apple Tv" },
+            },
+            mediaType: {
+                1: { title: "Digital" },              
+                2: { title: "Physical" }
+            },
+            genreType: {
+                1: { title: "First Person Shooter", shortTitle: "FPS" },
+                2: { title: "Real Time Strategy", shortTitle: "RTS" },
+                3: { title: "Multiplayer Online Battle Arean", shortTitle: "MOBA" },
+                4: { title: "Role Play Game", shortTitle: "RPG" },
+                5: { title: "Massively Multiplayer Online", shortTitle: "MMO" },
+                6: { title: "Massively Multiplayer Online Role Playing Games", shortTitle: "MMORPG" },
+                7: { title: "Puzzle", shortTitle: "Puzzle" },
+                8: { title: "Shoot 'em Up", shortTitle: "Shoot 'em Up" },
+                9: { title: "Beat 'em Up", shortTitle: "Beat 'em Up" },
+                10: { title: "Stealh Game", shortTitle: "Stealh Game" },
+                11: { title: "Survival Game", shortTitle: "Survival Game" },
+                12: { title: "Metroidvania", shortTitle: "Metroidvania" },
+                13: { title: "Strategy", shortTitle: "Strategy" },
+                14: { title: "Flight-Simulator", shortTitle: "Flight-Simulator" },
+            },
             games: [],
             editingGame: null,
             editItem: {
                 title: "",
-                platformId: "",
-                mediaId: "",
-                price: "",
+                platformId: null,
+                mediaId: null,
+                genreIds: [],
+                purchasePrice: "",
                 purchaseYear: "",
                 publicationYear: "",
                 isPSN: false,
                 isPSVR: false,
                 isSubscriptionBased: false,
                 isFinished: false,
+                isOnWishList: false,
+                posterImg: "",
                 comment: ""
             }            
         }
@@ -314,7 +353,8 @@ export default {
             updatedGame.title = snapshot.val().title;
             updatedGame.platformId = snapshot.val().platformId;
             updatedGame.mediaId = snapshot.val().mediaId;
-            updatedGame.price = snapshot.val().price;
+            updatedGame.genreIds = snapshot.val().genreIds;
+            updatedGame.purchasePrice = snapshot.val().purchasePrice;
             updatedGame.purchaseYear = snapshot.val().purchaseYear;
             updatedGame.publicationYear = snapshot.val().publicationYear;
             updatedGame.isPSN = snapshot.val().isPSN;
@@ -322,6 +362,8 @@ export default {
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
             updatedGame.isFinished = snapshot.val().isFinished;
+            updatedGame.isOnWishList = snapshot.val().isOnWishList;
+            updatedGame.posterImg = snapshot.val().posterImg;
             updatedGame.comment = snapshot.val().comment;
         });
     },
@@ -335,13 +377,16 @@ export default {
             this.editItem.title = game.title;
             this.editItem.platformId = game.platformId;
             this.editItem.mediaId = game.mediaId;
-            this.editItem.price = game.price;
+            this.editItem.genreIds = game.genreIds;
+            this.editItem.purchasePrice = game.purchasePrice;
             this.editItem.purchaseYear = game.purchaseYear;
             this.editItem.publicationYear = game.publicationYear;
             this.editItem.isPSN = game.isPSN;
             this.editItem.isPSVR = game.isPSVR;
             this.editItem.isSubscriptionBased = game.isSubscriptionBased;
             this.editItem.isFinished = game.isFinished;
+            this.editItem.isOnWishList = game.isOnWishList;
+            this.editItem.posterImg = game.posterImg;
             this.editItem.comment = game.comment;
         },
         updateGame() {
@@ -349,13 +394,16 @@ export default {
                 title: this.editItem.title,
                 platformId: this.editItem.platformId,
                 mediaId: this.editItem.mediaId,
-                price: this.editItem.price || "",
+                genreIds: this.editItem.genreIds,
+                purchasePrice: this.editItem.purchasePrice || "",
                 purchaseYear: this.editItem.purchaseYear || "",
                 publicationYear: this.editItem.publicationYear || "",
                 isPSN: this.editItem.isPSN,
                 isPSVR: this.editItem.isPSVR,
                 isSubscriptionBased: this.editItem.isSubscriptionBased,
                 isFinished: this.editItem.isFinished,
+                isOnWishList: this.editItem.isOnWishList,
+                posterImg: this.editItem.posterImg || "",
                 comment: this.editItem.comment || "",
             });
             this.cancelEditGame();
@@ -368,15 +416,18 @@ export default {
         cancelEditGame() {
             this.editingGame = null;
             this.editItem.title = "",
-            this.editItem.platformId = "",
-            this.editItem.mediaId = "",
-            this.editItem.price = "",
+            this.editItem.platformId = null,
+            this.editItem.mediaId = null,
+            this.editItem.genreIds = [],
+            this.editItem.purchasePrice = "",
             this.editItem.purchaseYear = "",
             this.editItem.publicationYear = "",
             this.editItem.isPSN = false,
             this.editItem.isPSVR = false,
             this.editItem.isSubscriptionBased = false,
             this.editItem.isFinished = false,
+            this.editItem.isOnWishList = false,
+            this.editItem.posterImg = ""
             this.editItem.comment = ""
 
             this.$refs.title.focus();
@@ -440,7 +491,7 @@ export default {
     }
 
     th {
-        font-size: 26px;
+        font-size: 20px;
         text-align: left;
         color: white;
         background-color: map-get($colors, 02);
@@ -449,6 +500,11 @@ export default {
     td {
         color: map-get($colors, 03);
     }
+}
+
+.games__poster-img {
+    width: 100px;
+    height: auto;
 }
 
 .games__delete-button {
