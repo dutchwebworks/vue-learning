@@ -6,7 +6,7 @@
             v-if="users.length == 0"
             class="users__loading paragraph">Loading users from Firebase &hellip;</p>
 
-        <table            
+        <table
             v-else
             cellspacing="0"
             class="users__listing">
@@ -219,7 +219,7 @@ export default {
             this.cancelEditUser();
         },
         deleteUser(user) {
-            if(confirm("Delete user with username: " + user.username + "?") == true) {
+            if(confirm("Delete user: '" + user.username + "'?") == true) {
                 usersRef.child(user.id).remove();
             }
         },
