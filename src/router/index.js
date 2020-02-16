@@ -88,7 +88,12 @@ const routes = [
   {
     path: "/users",
     name: "UsersPage",
-    component: () => import(/* webpackChunkName: "method-user-page" */ "@/views/UsersPage")
+    component: () => import(/* webpackChunkName: "users-page" */ "@/views/UsersPage")
+  },
+  {
+    path: "/games",
+    name: "GamesPage",
+    component: () => import(/* webpackChunkName: "games-page" */ "@/views/GamesPage")
   },
   {
     path: "*",
