@@ -3,7 +3,7 @@
         name="modal-window--fade">
         <div 
             class="modal-window"
-            @click.prevent="cancel">
+            @click.self="cancel">
             <div
                 role="dialog"
                 aria-labelledby="modalWindowTitle"
