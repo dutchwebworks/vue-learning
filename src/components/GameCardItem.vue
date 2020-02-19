@@ -1,11 +1,13 @@
 <template>
     <article
         class="games__grid-item">
-        <img 
-            :src="game.posterImg" 
-            :alt="game.title"
-            @click="editGame(game)"
-            class="games__poster-img">
+        <router-link
+            :to="{ name: 'GamesDetailPage', params: game }">
+            <img 
+                :src="game.posterImg" 
+                :alt="game.title"
+                class="games__poster-img">
+        </router-link>
 
         <h3 class="games__title">{{ game.title }}</h3>
 
