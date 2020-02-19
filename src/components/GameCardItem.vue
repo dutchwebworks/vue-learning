@@ -1,8 +1,9 @@
 <template>
     <article
-        class="games__grid-item">
+        class="games__grid-item"
+        :title="game.title">
         <router-link
-            :to="{ name: 'GamesDetailPage', params: game }">
+            :to="{ name: 'GamesDetailPage', params: { game: game, title: $options.filters.slugify(game.title) } }">
             <img 
                 :src="game.posterImg" 
                 :alt="game.title"
@@ -78,6 +79,7 @@ export default {
 // ---------------------------------------------
 
 .games__grid-item {
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     padding: 20px 20px;

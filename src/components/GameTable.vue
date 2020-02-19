@@ -26,10 +26,13 @@
                 v-for="game in games"
                 :key="game.id">
                 <td>
-                    <img 
-                        :src="game.posterImg" 
-                        :alt="game.title"
-                        class="games__poster-img">
+                    <router-link
+                    :to="{ name: 'GamesDetailPage', params: { game: game, title: $options.filters.slugify(game.title) } }">
+                        <img 
+                            :src="game.posterImg" 
+                            :alt="game.title"
+                            class="games__poster-img">
+                    </router-link>
                 </td>
                 <td><strong>{{ game.title }}</strong></td>
                 <td>{{ platformType[game.platformId].shortTitle }}</td>

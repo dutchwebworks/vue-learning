@@ -96,7 +96,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "games-page" */ "@/views/GamesPage")
   },
   {
-    path: "/games/:title/:id",
+    path: "/games/:title",
     name: "GamesDetailPage",
     component: () => import(/* webpackChunkName: "games-detail-page" */ "@/views/GamesDetailPage")
   },
