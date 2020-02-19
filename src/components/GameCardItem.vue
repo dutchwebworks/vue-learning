@@ -4,6 +4,7 @@
         <img 
             :src="game.posterImg" 
             :alt="game.title"
+            @click="editGame(game)"
             class="games__poster-img">
 
         <h3 class="games__title">{{ game.title }}</h3>
@@ -111,9 +112,12 @@ export default {
 }
 
 .games__platform {
+    margin: 10px 0;
     font-size: 16px;
     font-weight: 300;    
-	font-family: "Roboto", sans-serif;
+    font-family: "Roboto", sans-serif;
+    color: map-get($colors, 02);
+    font-size: 22px;
 }
 
 .games__title,
@@ -124,6 +128,7 @@ export default {
 }
 
 .games__title {
+    font-size: 26px;
     color: map-get($colors, 01);
 }
 
