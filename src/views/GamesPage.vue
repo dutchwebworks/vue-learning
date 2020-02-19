@@ -2,84 +2,36 @@
     <main class="games">
         <h1 class="heading">Games</h1>
 
+        <div class="games__nav-view">
+            <button 
+                @click="switchView('GameCardGrid')"
+                class="button button--01">
+                Grid view
+            </button>
+
+            &nbsp;
+
+            <button 
+                @click="switchView('GameTable')"
+                class="button button--01">
+                Table view
+            </button>
+        </div>
+
         <p
             v-if="games.length == 0"
             class="games__loading paragraph">Loading games from Firebase &hellip;</p>
 
-        <table
+        <component
             v-else
-            cellspacing="0"
-            class="games__listing">
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Platform</th>
-                    <th>Media</th>
-                    <th>Genre</th>
-                    <th>Purchase price</th>
-                    <th>Purchase year</th>
-                    <th>Publication year</th>
-                    <th>PSN game</th>
-                    <th>PSVR game</th>
-                    <th>Subscription based</th>
-                    <th>Finished</th>                    
-                    <th>Wishlist</th>
-                    <th>Comment</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody> 
-                <tr
-                    v-for="game in games"
-                    :key="game.id">
-                    <td>
-                        <img 
-                            :src="game.posterImg" 
-                            :alt="game.title"
-                            class="games__poster-img">
-                    </td>
-                    <td><strong>{{ game.title }}</strong></td>
-                    <td>{{ platformType[game.platformId].shortTitle }}</td>
-                    <td>{{ mediaType[game.mediaId].title }}</td>
-                    <td>
-                        <ul>
-                            <li 
-                                v-for="genreId in game.genreIds"
-                                :key="genreId">
-                                {{ genreType[genreId].shortTitle }}
-                            </li>
-                        </ul>
-                    </td>
-                    <td>{{ game.purchasePrice | euroCurrency }}</td>
-                    <td>{{ game.purchaseYear }}</td>
-                    <td>{{ game.publicationYear }}</td>
-                    <td>{{ game.isPSN ? "PSN" : "-" }}</td>
-                    <td>{{ game.isPSVR ? "PSVR" : "-" }}</td>
-                    <td>{{ game.isSubscriptionBased ? "Subscription" : "-" }}</td>
-                    <td>{{ game.isFinished ? "Finished!!" : "Not finished" }}</td>                    
-                    <td>{{ game.isOnWishList ? "Yes" : "-" }}</td>                    
-                    <td>{{ game.comment }}</td>
-                    <td>
-                        <button 
-                            class="games__delete-button button button--01"
-                            @click="editGame(game)"
-                            title="Edit this game">
-                            Edit
-                        </button>
-
-                        &nbsp;
-
-                        <button 
-                            class="games__delete-button button button--02"
-                            @click="deleteGame(game)"
-                            title="Delete this game">
-                            &times;
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            :is="gameView"
+            :games="games"
+            :platformType="platformType"
+            :genreType="genreType"
+            :mediaType="mediaType"
+            @editGame="editGame"
+            @deleteGame="deleteGame">
+        </component>
 
         <h2 class="sub-heading">Manage games</h2>
         
@@ -287,10 +239,17 @@
 import { required, minLength } from "vuelidate/lib/validators";
 import { db } from "@/firebase";
 import { gamesRef } from "@/firebase";
+import GameCardGrid from "@/components/GameCardGrid";
+import GameTable from "@/components/GameTable";
 
 export default {
+    components: {
+        GameCardGrid,
+        GameTable
+    },
     data() {
         return {
+            gameView: "GameCardGrid",
             platformType: {
                 1: { title: "Nintendo Wii Classic", shortTitle: "Wii Classic" },
                 2: { title: "Nintendo Wii", shortTitle: "Wii" },
@@ -434,6 +393,9 @@ export default {
 
             this.$refs.title.focus();
             // this.$nextTick(() => { this.$v.$reset() })
+        },
+        switchView(componentName) {
+            this.gameView = componentName;
         }
     }
 }
@@ -450,6 +412,10 @@ export default {
     grid-template-columns: 150px 1fr;
 }
 
+// ---------------------------------------------
+// Element
+// ---------------------------------------------
+
 .games__labels {
     grid-column-start: 1;
 }
@@ -458,9 +424,9 @@ export default {
     grid-column-start: 2;
 }
 
-// ---------------------------------------------
-// Element
-// ---------------------------------------------
+.games__nav-view {
+    margin: 0 0 20px 0;
+}
 
 .games__fieldset {
     padding: 10px 15px;
@@ -505,7 +471,7 @@ export default {
 }
 
 .games__poster-img {
-    width: 100px;
+    width: 200px;
     height: auto;
 }
 
