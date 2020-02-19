@@ -4,16 +4,22 @@
 
         <div class="games__nav-view">
             <button 
-                @click="switchView('GameCardGrid')"
+                @click="showManagerPopup = true"
                 class="button button--01">
+                Add new game
+            </button>
+
+            <button 
+                v-show="gameView == 'GameTable'"
+                @click="switchView('GameCardGrid')"
+                class="button button--02">
                 Grid view
             </button>
 
-            &nbsp;
-
             <button 
+                v-show="gameView == 'GameCardGrid'"
                 @click="switchView('GameTable')"
-                class="button button--01">
+                class="button button--02">
                 Table view
             </button>
         </div>
@@ -33,205 +39,209 @@
             @deleteGame="deleteGame">
         </component>
 
-        <h2 class="sub-heading">Manage games</h2>
-        
-        <fieldset class="games__fieldset">
-            <legend class="games__legend paragraph">Manage games</legend>
+        <ModalWindow
+            v-show="showManagerPopup"
+            @onConfirm="showManagerPopup = false"
+            @onCancel="showManagerPopup = false"
+            title="Manage game">
+            <fieldset class="games__fieldset">
+                <legend class="games__legend paragraph">Manage games</legend>
 
-            <form 
-                @submit.prevent="onSubmit"
-                class="games__form">
+                <form 
+                    @submit.prevent="onSubmit"
+                    class="games__form">
 
-                <label
-                    class="games__labels paragraph">
-                    Title:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Title:
+                    </label>
 
-                <input
-                    ref="title"
-                    type="text"
-                    v-model="editItem.title"
-                    class="games__input paragraph"
-                    required>
+                    <input
+                        ref="title"
+                        type="text"
+                        v-model="editItem.title"
+                        class="games__input paragraph"
+                        required>
 
-                <label
-                    class="games__labels paragraph">
-                    Platform:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Platform:
+                    </label>
 
-                <select
-                    name="platformId"
-                    v-model.number="editItem.platformId">
-                    <option
-                        v-for="(platform, name, index) in platformType"
-                        :key="index"
-                        :value="name">
-                        {{ platform.title }}
-                    </option>
-                </select>
+                    <select
+                        name="platformId"
+                        v-model.number="editItem.platformId">
+                        <option
+                            v-for="(platform, name, index) in platformType"
+                            :key="index"
+                            :value="name">
+                            {{ platform.title }}
+                        </option>
+                    </select>
 
-                <label
-                    class="games__labels paragraph">
-                    Media:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Media:
+                    </label>
 
-                <select
-                    name="mediaId"
-                    v-model.number="editItem.mediaId">
-                    <option
-                        v-for="(media, name, index) in mediaType"
-                        :key="index"
-                        :value="name">
-                        {{ media.title }}
-                    </option>
-                </select>
+                    <select
+                        name="mediaId"
+                        v-model.number="editItem.mediaId">
+                        <option
+                            v-for="(media, name, index) in mediaType"
+                            :key="index"
+                            :value="name">
+                            {{ media.title }}
+                        </option>
+                    </select>
 
-                <label
-                    class="games__labels paragraph">
-                    Genre:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Genre:
+                    </label>
 
-                <select
-                    multiple
-                    name="platformId"
-                    v-model.number="editItem.genreIds">
-                    <option
-                        v-for="(genre, name, index) in genreType"
-                        :key="index"
-                        :value="name">
-                        {{ genre.title }}
-                    </option>
-                </select>
+                    <select
+                        multiple
+                        name="platformId"
+                        v-model.number="editItem.genreIds">
+                        <option
+                            v-for="(genre, name, index) in genreType"
+                            :key="index"
+                            :value="name">
+                            {{ genre.title }}
+                        </option>
+                    </select>
 
-                <label
-                    class="games__labels paragraph">
-                    Purchase price:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Purchase price:
+                    </label>
 
-                <input
-                    type="number"
-                    v-model.number="editItem.purchasePrice"
-                    class="games__input paragraph">
-                
-                <label
-                    class="games__labels paragraph">
-                    Purchase year:
-                </label>
+                    <input
+                        type="number"
+                        v-model.number="editItem.purchasePrice"
+                        class="games__input paragraph">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Purchase year:
+                    </label>
 
-                <input
-                    type="number"
-                    v-model.number="editItem.purchaseYear"
-                    class="games__input paragraph">
-                
-                <label
-                    class="games__labels paragraph">
-                    Publication year:
-                </label>
+                    <input
+                        type="number"
+                        v-model.number="editItem.purchaseYear"
+                        class="games__input paragraph">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Publication year:
+                    </label>
 
-                <input
-                    type="number"
-                    v-model.number="editItem.publicationYear"
-                    class="games__input paragraph">
-                
-                <label
-                    class="games__labels paragraph">
-                    Playstation Network Game:
-                </label>
+                    <input
+                        type="number"
+                        v-model.number="editItem.publicationYear"
+                        class="games__input paragraph">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Playstation Network Game:
+                    </label>
 
-                <input
-                    type="checkbox"
-                    v-model="editItem.isPSN"
-                    class="games__checkbox">
-                
-                <label
-                    class="games__labels paragraph">
-                    Playstation VR Game:
-                </label>
+                    <input
+                        type="checkbox"
+                        v-model="editItem.isPSN"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Playstation VR Game:
+                    </label>
 
-                <input
-                    type="checkbox"
-                    v-model="editItem.isPSVR"
-                    class="games__checkbox">
-                
-                <label
-                    class="games__labels paragraph">
-                    Part of subscription service:
-                </label>
+                    <input
+                        type="checkbox"
+                        v-model="editItem.isPSVR"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Part of subscription service:
+                    </label>
 
-                <input
-                    type="checkbox"
-                    v-model="editItem.isSubscriptionBased"
-                    class="games__checkbox">
-                
-                <label
-                    class="games__labels paragraph">
-                    Finished the game:
-                </label>
+                    <input
+                        type="checkbox"
+                        v-model="editItem.isSubscriptionBased"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Finished the game:
+                    </label>
 
-                <input
-                    type="checkbox"
-                    v-model="editItem.isFinished"
-                    class="games__checkbox">
-                
-                <label
-                    class="games__labels paragraph">
-                    On wishlist:
-                </label>
+                    <input
+                        type="checkbox"
+                        v-model="editItem.isFinished"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        On wishlist:
+                    </label>
 
-                <input
-                    type="checkbox"
-                    v-model="editItem.isOnWishList"
-                    class="games__checkbox">
-                
-                <label
-                    class="games__labels paragraph">
-                    Comment:
-                </label>
+                    <input
+                        type="checkbox"
+                        v-model="editItem.isOnWishList"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Comment:
+                    </label>
 
-                <textarea
-                    v-model="editItem.comment">
-                </textarea>
+                    <textarea
+                        v-model="editItem.comment">
+                    </textarea>
 
-                <label
-                    class="games__labels paragraph">
-                    Poster image:
-                </label>
+                    <label
+                        class="games__labels paragraph">
+                        Poster image:
+                    </label>
 
-                <input
-                    type="text"
-                    v-model="editItem.posterImg"
-                    class="games__input paragraph">
+                    <input
+                        type="text"
+                        v-model="editItem.posterImg"
+                        class="games__input paragraph">
 
-                <div 
-                    v-if="!editingGame"
-                    class="games__form-buttons">
-                    <input      
-                        type="submit"
-                        value="Add"
-                        class="button button--01">
-                </div>
+                    <div 
+                        v-if="!editingGame"
+                        class="games__form-buttons">
+                        <input      
+                            type="submit"
+                            value="Add"
+                            class="button button--01">
+                    </div>
 
-                <div 
-                    v-else
-                    class="games__form-buttons">   
-                    <button
-                        @click="updateGame" 
-                        value="Update"
-                        class="button button--02">
-                        Update
-                    </button>
+                    <div 
+                        v-else
+                        class="games__form-buttons">   
+                        <button
+                            @click="updateGame" 
+                            value="Update"
+                            class="button button--02">
+                            Update
+                        </button>
 
-                    &nbsp;
+                        &nbsp;
 
-                    <button
-                        @click="cancelEditGame"
-                        value="Cancel"
-                        class="button button--01">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </fieldset>
+                        <button
+                            @click="cancelEditGame"
+                            value="Cancel"
+                            class="button button--01">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </fieldset>
+        </ModalWindow>      
     </main>
 </template>
 
@@ -241,15 +251,35 @@ import { db } from "@/firebase";
 import { gamesRef } from "@/firebase";
 import GameCardGrid from "@/components/GameCardGrid";
 import GameTable from "@/components/GameTable";
+import ModalWindow from "@/components/ModalWindow";
 
 export default {
     components: {
         GameCardGrid,
-        GameTable
+        GameTable,
+        ModalWindow
+    },
+    mounted() {
+        var self = this;
+
+        document.addEventListener('keydown', (event) => {
+            if (event.keyCode == 78) {
+                self.showManagerPopup = true;
+            }
+
+            if (event.keyCode == 71 && self.showManagerPopup == false) {
+                self.gameView = "GameCardGrid";
+            }
+
+            if (event.keyCode == 84 && self.showManagerPopup == false) {
+                self.gameView = "GameTable";
+            }
+        }, false);
     },
     data() {
         return {
             gameView: "GameCardGrid",
+            showManagerPopup: false,
             platformType: {
                 1: { title: "Nintendo Wii Classic", shortTitle: "Wii Classic" },
                 2: { title: "Nintendo Wii", shortTitle: "Wii" },
@@ -349,6 +379,8 @@ export default {
             this.editItem.isOnWishList = game.isOnWishList;
             this.editItem.posterImg = game.posterImg;
             this.editItem.comment = game.comment;
+
+            this.showManagerPopup = true;
         },
         updateGame() {
             gamesRef.child(this.editingGame.id).update({
@@ -393,6 +425,8 @@ export default {
 
             this.$refs.title.focus();
             // this.$nextTick(() => { this.$v.$reset() })
+
+            this.showManagerPopup = false;
         },
         switchView(componentName) {
             this.gameView = componentName;
@@ -425,10 +459,21 @@ export default {
 }
 
 .games__nav-view {
+    display: flex;
     margin: 0 0 20px 0;
+
+    button:first-child {
+        margin-right: auto;
+    }
+
+    button + button {
+        margin-left: 10px;
+    }
 }
 
 .games__fieldset {
+    height: 60vh;
+    overflow: scroll;
     padding: 10px 15px;
     border: 3px solid map-get($colors, 01);
 }
