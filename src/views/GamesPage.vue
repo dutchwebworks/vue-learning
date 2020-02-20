@@ -43,14 +43,13 @@
             v-show="showManagerPopup"
             @onConfirm="showManagerPopup = false"
             @onCancel="showManagerPopup = false"
+            :showModalFooter="false"
             title="Manage game">
-            <fieldset class="games__fieldset">
-                <legend class="games__legend paragraph">Manage games</legend>
+            <form 
+                @submit.prevent="onSubmit"
+                class="games__form">
 
-                <form 
-                    @submit.prevent="onSubmit"
-                    class="games__form">
-
+                <div class="games__form-overflow">
                     <label
                         class="games__labels paragraph">
                         Title:
@@ -103,6 +102,7 @@
                     <select
                         multiple
                         name="platformId"
+                        class="games__genres"
                         v-model.number="editItem.genreIds">
                         <option
                             v-for="(genre, name, index) in genreType"
@@ -111,6 +111,16 @@
                             {{ genre.title }}
                         </option>
                     </select>
+
+                    <label
+                        class="games__labels paragraph">
+                        Poster image:
+                    </label>
+
+                    <input
+                        type="text"
+                        v-model="editItem.posterImg"
+                        class="games__input paragraph">
 
                     <label
                         class="games__labels paragraph">
@@ -201,46 +211,39 @@
                         v-model="editItem.comment">
                     </textarea>
 
-                    <label
-                        class="games__labels paragraph">
-                        Poster image:
-                    </label>
-
-                    <input
-                        type="text"
-                        v-model="editItem.posterImg"
-                        class="games__input paragraph">
-
-                    <div 
-                        v-if="!editingGame"
-                        class="games__form-buttons">
-                        <input      
-                            type="submit"
-                            value="Add"
-                            class="button button--01">
+                    
                     </div>
+                </div>
 
-                    <div 
-                        v-else
-                        class="games__form-buttons">   
-                        <button
-                            @click="updateGame" 
-                            value="Update"
-                            class="button button--02">
-                            Update
-                        </button>
+                <div 
+                    v-if="!editingGame"
+                    class="games__form-buttons">
+                    <input      
+                        type="submit"
+                        value="Add"
+                        class="button button--01">
+                </div>
 
-                        &nbsp;
+                <div 
+                    v-else
+                    class="games__form-buttons">   
+                    <button
+                        @click="updateGame" 
+                        value="Update"
+                        class="button button--02">
+                        Update
+                    </button>
 
-                        <button
-                            @click="cancelEditGame"
-                            value="Cancel"
-                            class="button button--01">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </fieldset>
+                    &nbsp;
+
+                    <button
+                        @click="cancelEditGame"
+                        value="Cancel"
+                        class="button button--01">
+                        Cancel
+                    </button>
+                </div>
+            </form>
         </ModalWindow>      
     </main>
 </template>
@@ -430,6 +433,20 @@ export default {
         },
         switchView(componentName) {
             this.gameView = componentName;
+        },        
+    },
+    computed: {
+        genres() {
+            var self = this;
+            var genreList = [];
+
+            return this.games.forEach(function(game){
+                game.genreIds.forEach(function(genre){
+                    if(genre != undefined || genre != "") {
+                        genreList.push(self.genreType[genre].title);
+                    }
+                });
+            });
         }
     }
 }
@@ -441,9 +458,7 @@ export default {
 // ---------------------------------------------
 
 .games__form {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: 150px 1fr;
+    
 }
 
 // ---------------------------------------------
@@ -472,8 +487,6 @@ export default {
 }
 
 .games__fieldset {
-    height: 60vh;
-    overflow: scroll;
     padding: 10px 15px;
     border: 3px solid map-get($colors, 01);
 }
@@ -485,6 +498,16 @@ export default {
     padding-right: 10px;
     color: map-get($colors, 01);
 	font-family: "Roboto", sans-serif;
+}
+
+.games__form-overflow {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 150px 1fr;
+    height: 60vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 20px 20px 0 5px;
 }
 
 .games__listing {
@@ -527,7 +550,12 @@ export default {
 }
 
 .games__form-buttons {
+    padding-top: 10px;
     grid-column: span 2;
+}
+
+.games__genres {
+    min-height: 250px;
 }
 
 .games__form-error {
