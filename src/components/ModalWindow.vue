@@ -105,7 +105,7 @@
 
     .modal-window__container {
         position: relative;
-        min-width: 20vw;
+        min-width: 30vw;
         max-width: 50vw;
         padding: 20px;
         border-radius: 10px;
