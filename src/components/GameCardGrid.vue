@@ -35,12 +35,12 @@
 
             <ul class="filter-options">
                 <li 
-                    v-for="(item, index) in media"
+                    v-for="(media, index) in sortedMedia"
                     :key="index"
                     class="filter-options__items paragraph">
                     <label class="filter__label">
-                        <input type="checkbox" v-model="filteredByMedia" :value="item">
-                        {{ mediaType[item].title }}
+                        <input type="checkbox" v-model="filteredByMedia" :value="media.id">
+                        {{ media.title }}
                     </label>
                 </li>
             </ul>
@@ -151,7 +151,12 @@ export default {
             });            
         },
         getMediaIds() {
-            this.media = _.uniq(_.map(this.games, "mediaId"));
+            _.uniq(_.map(this.games, "mediaId")).forEach(item => {
+                this.media.push({
+                    id: item,
+                    title: this.mediaType[item].title
+                });
+            });
         },
         gamePassesSearchByTitleFilter(game) {
             return this.searchByTitle == "" ? true : game.title.toLowerCase().includes(this.searchByTitle);
@@ -176,6 +181,9 @@ export default {
         },
         sortedPlatforms() {
             return _.sortBy(this.platforms, "title");
+        },   
+        sortedMedia() {
+            return _.sortBy(this.media, "title");
         }      
     },
 }
