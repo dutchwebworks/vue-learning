@@ -21,12 +21,12 @@
 
             <ul class="filter-options">
                 <li 
-                    v-for="(platform, index) in platforms"
+                    v-for="(platform, index) in sortedPlatforms"
                     :key="index"
                     class="filter-options__items paragraph">
                     <label class="filter__label">
-                        <input type="checkbox" v-model="filteredByPlatform" :value="platform">
-                        {{ platformType[platform].title }}
+                        <input type="checkbox" v-model="filteredByPlatform" :value="platform.id">
+                        {{ platform.title }}
                     </label>
                 </li>
             </ul>
@@ -142,7 +142,13 @@ export default {
             this.$emit("deleteGame", game);
         },
         getPlatformIds() {
-            this.platforms = _.uniq(_.map(this.games, "platformId"));
+            _.uniq(_.map(this.games, "platformId")).forEach(item => {
+                this.platforms.push({
+                    id: item,
+                    title: this.platformType[item].title,
+                    shortTitle: this.platformType[item].shortTitle,
+                });
+            });            
         },
         getMediaIds() {
             this.media = _.uniq(_.map(this.games, "mediaId"));
@@ -167,7 +173,10 @@ export default {
                 .filter(this.gamePassesSearchByTitleFilter)
                 .filter(this.gamePassesMediaFilter)
             , this.sortedBy);
-        }        
+        },
+        sortedPlatforms() {
+            return _.sortBy(this.platforms, "title");
+        }      
     },
 }
 </script>
