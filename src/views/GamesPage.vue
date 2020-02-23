@@ -265,6 +265,7 @@ export default {
     mounted() {
         var self = this;
 
+        /*
         document.addEventListener('keydown', (event) => {
             if (event.keyCode == 78) {
                 self.showManagerPopup = true;
@@ -278,6 +279,7 @@ export default {
                 self.gameView = "GameTable";
             }
         }, false);
+        */
     },
     data() {
         return {
