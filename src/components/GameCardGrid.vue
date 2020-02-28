@@ -1,88 +1,16 @@
 <template>
-    <div>
-        <hr>
-
-        <section class="filters">
-            <h3 class="sub-heading">Search by title:</h3>
-
-            <div class="search">
-                <input 
-                    type="text" 
-                    class="search__input"
-                    v-model="searchByTitle">
-                <button
-                    class="search__button button button--01"
-                    @click="searchByTitle = ''">
-                    &times;
-                </button>
-            </div>
-            
-            <h3 class="sub-heading">Filter by platform:</h3>
-
-            <ul class="filter-options">
-                <li 
-                    v-for="(platform, index) in sortedPlatforms"
-                    :key="index"
-                    class="filter-options__items paragraph">
-                    <label class="filter__label">
-                        <input
-                            type="checkbox"
-                            v-model="filteredByPlatform" 
-                            :value="platform.id">
-                        {{ platform.title }}
-                    </label>
-                </li>
-            </ul>
-
-            <h3 class="sub-heading">Filter by media:</h3>
-
-            <ul class="filter-options">
-                <li 
-                    v-for="(media, index) in sortedMedia"
-                    :key="index"
-                    class="filter-options__items paragraph">
-                    <label class="filter__label">
-                        <input
-                            type="checkbox"
-                            v-model="filteredByMedia" 
-                            :value="media.id">
-                        {{ media.title }}
-                    </label>
-                </li>
-            </ul>
-
-            <h3 class="sub-heading">Sort by:</h3>
-
-            <div>
-                <select
-                    v-model="sortedBy">
-                    <option                    
-                        v-for="(sort, index) in sortBy"
-                        :key="index"
-                        :value="sort.value">
-                        {{ sort.name }}
-                    </option>
-                </select>
-            </div>
-        </section>
-        
-        <hr>
-
-        <h2 class="sub-heading">{{ showingTotal }}</h2>
-
-        <div
-            class="games__grid">
-            <GameCardItem
-                v-for="game in filteredGames"
-                :key="game.id"
-                :game="game"
-                :platformType="platformType"
-                :genreType="genreType"
-                :mediaType="mediaType"
-                @editGame="editGame"
-                @deleteGame="deleteGame">
-            </GameCardItem>
-        </div>
+    <div
+        class="games__grid">
+        <GameCardItem
+            v-for="game in games"
+            :key="game.id"
+            :game="game"
+            :platformType="platformType"
+            :genreType="genreType"
+            :mediaType="mediaType"
+            @editGame="editGame"
+            @deleteGame="deleteGame">
+        </GameCardItem>
     </div>
 </template>
 
@@ -111,87 +39,14 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            searchByTitle: "",
-            platforms: [],
-            media: [],          
-            filteredByPlatform: [],
-            filteredByMedia: [],
-            sortBy: [
-                {
-                    name: "Title",
-                    value: "title"
-                },
-                {
-                    name: "Publication year",
-                    value: "publicationYear"
-                },
-                {
-                    name: "Purchase year",
-                    value: "purchaseYear"
-                }
-            ],
-            sortedBy: ""
-        }
-    },
-    created() {
-        this.getPlatformIds();
-        this.getMediaIds();
-        this.$nextTick(function() { this.sortedBy = this.sortBy[0].value });  
-    },
     methods: {
         editGame(game) {
             this.$emit("editGame", game);
         },
         deleteGame(game) {
             this.$emit("deleteGame", game);
-        },
-        getPlatformIds() {
-            _.uniq(_.map(this.games, "platformId")).forEach(item => {
-                this.platforms.push({
-                    id: item,
-                    title: this.platformType[item].title,
-                    shortTitle: this.platformType[item].shortTitle,
-                });
-            });            
-        },
-        getMediaIds() {
-            _.uniq(_.map(this.games, "mediaId")).forEach(item => {
-                this.media.push({
-                    id: item,
-                    title: this.mediaType[item].title
-                });
-            });
-        },
-        gamePassesSearchByTitleFilter(game) {
-            return this.searchByTitle == "" ? true : game.title.toLowerCase().includes(this.searchByTitle);
-        },
-        gamePassesPlatformFilter(game) {
-            return !this.filteredByPlatform.length ? true : this.filteredByPlatform.find(platformId => game.platformId === platformId);
-        },
-        gamePassesMediaFilter(game) {
-            return !this.filteredByMedia.length ? true : this.filteredByMedia.find(mediaId => game.mediaId === mediaId);
         }
-    },
-    computed: {
-        showingTotal() {
-            return "Showing: " +  this.filteredGames.length + " result" + (this.filteredGames.length > 0 ? "s" : "");
-        },
-        filteredGames() {
-            return _.sortBy(this.games
-                .filter(this.gamePassesPlatformFilter)
-                .filter(this.gamePassesSearchByTitleFilter)
-                .filter(this.gamePassesMediaFilter)
-            , this.sortedBy);
-        },
-        sortedPlatforms() {
-            return _.sortBy(this.platforms, "title");
-        },   
-        sortedMedia() {
-            return _.sortBy(this.media, "title");
-        }      
-    },
+    }
 }
 </script>
 
@@ -210,44 +65,7 @@ export default {
 // Element
 // ---------------------------------------------
 
-.filters {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    grid-gap: 20px;
 
-    .sub-heading {
-        margin: 0;
-        font-size: 22px;
-        color: map-get($colors, 02);
-    }
-}
-
-.filter-options {
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.filter-options__items {
-    display: flex;
-    align-self: center;
-    list-style: none;
-    margin-right: 10px;
-    font-size: 22px;
-}
-
-.search {  
-    display: flex;
-}
-
-.search__input {
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 22px;
-    color: map-get($colors, 01);
-    border: 1px solid black;
-    margin-right: 10px;
-}
 
 // ---------------------------------------------
 // Modifier
