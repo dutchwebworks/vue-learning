@@ -43,7 +43,9 @@
             
             <h3 class="sub-heading">Filter by platform:</h3>
 
-            <ul class="filter-options">
+            <ul
+                v-show="filteredGames.length >= 1"
+                class="filter-options">
                 <li 
                     v-for="(platform, index) in sortedPlatforms"
                     :key="index"
@@ -60,7 +62,9 @@
 
             <h3 class="sub-heading">Filter by media:</h3>
 
-            <ul class="filter-options">
+            <ul
+                v-show="filteredGames.length >= 1"
+                class="filter-options">
                 <li 
                     v-for="(media, index) in sortedMedia"
                     :key="index"
@@ -353,6 +357,7 @@ export default {
     },
     data() {
         return {
+            gamesLoaded: false,
             searchByTitle: "",
             platforms: [],
             media: [],          
@@ -427,7 +432,10 @@ export default {
         }
     },
     created() {
-        gamesRef.on("child_added", snapshot => this.games.push({...snapshot.val(), id: snapshot.key }));
+        gamesRef.on("child_added", (snapshot) => {
+            this.games.push({...snapshot.val(), id: snapshot.key });
+            this.gamesLoaded = true;
+        });
 
         gamesRef.on("child_removed", snapshot => {
             const deletedGame = this.games.find(game => game.id === snapshot.key);
@@ -453,9 +461,7 @@ export default {
             updatedGame.comment = snapshot.val().comment;
         });
 
-        this.getPlatformIds();
-        this.getMediaIds();
-        this.$nextTick(function() { this.sortedBy = this.sortBy[0].value }); 
+        
     },
     methods: {
         onSubmit() {
@@ -533,7 +539,7 @@ export default {
         getPlatformIds() {
             var self = this;
 
-            _.uniq(_.map(self.games, "platformId")).forEach(item => {
+            _.uniq(_.map(self.filteredGames, "platformId")).forEach(item => {
                 self.platforms.push({
                     id: item,
                     title: self.platformType[item].title,
@@ -566,7 +572,7 @@ export default {
             var self = this;
             var genreList = [];
 
-            return this.games.forEach(function(game){
+            return this.filteredGames.forEach(function(game){
                 game.genreIds.forEach(function(genre){
                     if(genre != undefined || genre != "") {
                         genreList.push(self.genreType[genre].title);
@@ -589,7 +595,17 @@ export default {
         },   
         sortedMedia() {
             return _.sortBy(this.media, "title");
+        },  
+        sortedGenres() {
+            return _.sortBy(this.genreType, "title");
         }  
+    },
+    watch: {
+        gamesLoaded(newValue, oldValue) {
+            this.getPlatformIds();
+            this.getMediaIds();
+            this.$nextTick(function() { this.sortedBy = this.sortBy[0].value });
+        }
     }
 }
 </script>
@@ -747,6 +763,10 @@ export default {
     color: map-get($colors, 01);
     border: 1px solid black;
     margin-right: 10px;
+}
+
+.sub-heading {
+    grid-column-start: 1;
 }
 
 // ---------------------------------------------
