@@ -103,7 +103,7 @@ export default {
         },
         deleteGame(game) {
             this.$emit("deleteGame", game);
-        },
+        }
     }
 }
 </script>
