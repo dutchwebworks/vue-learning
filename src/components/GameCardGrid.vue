@@ -25,7 +25,10 @@
                     :key="index"
                     class="filter-options__items paragraph">
                     <label class="filter__label">
-                        <input type="checkbox" v-model="filteredByPlatform" :value="platform.id">
+                        <input
+                            type="checkbox"
+                            v-model="filteredByPlatform" 
+                            :value="platform.id">
                         {{ platform.title }}
                     </label>
                 </li>
@@ -39,7 +42,10 @@
                     :key="index"
                     class="filter-options__items paragraph">
                     <label class="filter__label">
-                        <input type="checkbox" v-model="filteredByMedia" :value="media.id">
+                        <input
+                            type="checkbox"
+                            v-model="filteredByMedia" 
+                            :value="media.id">
                         {{ media.title }}
                     </label>
                 </li>
