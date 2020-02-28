@@ -79,6 +79,90 @@
                 </li>
             </ul>
 
+            <h3 class="sub-heading">Finished:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByFinished">
+                        Show finished games
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">PSN free game:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByIsPSN">
+                        Show free PSN games
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">PS VR game:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByIsPSVR">
+                        Show PSVR games
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">Subscription based:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByIsSubscriptionBased">
+                        Show subscription based games
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">On wishlist:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByIsOnWishList">
+                        Show games on wishlist
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">Starred:</h3>
+
+            <ul class="filter-options">
+                <li
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                    <input 
+                        type="checkbox"
+                        v-model="filterByIsStarred">
+                        Show starred games
+                    </label>
+                </li>
+            </ul>
+
             <h3 class="sub-heading">Sort by:</h3>
 
             <div>
@@ -263,6 +347,16 @@
 
                     <input
                         type="checkbox"
+                        v-model="editItem.isStarred"
+                        class="games__checkbox">
+                    
+                    <label
+                        class="games__labels paragraph">
+                        Starred:
+                    </label>
+
+                    <input
+                        type="checkbox"
                         v-model="editItem.isFinished"
                         class="games__checkbox">
                     
@@ -356,13 +450,19 @@ export default {
         */
     },
     data() {
-        return {
+        return {            
             gamesLoaded: false,
             searchByTitle: "",
             platforms: [],
             media: [],          
             filteredByPlatform: [],
             filteredByMedia: [],
+            filterByFinished: false,
+            filterByIsPSN: false,
+            filterByIsPSVR: false,
+            filterByIsSubscriptionBased: false,
+            filterByIsOnWishList: false,
+            filterByIsStarred: false,
             sortBy: [
                 {
                     name: "Title",
@@ -423,6 +523,7 @@ export default {
                 publicationYear: "",
                 isPSN: false,
                 isPSVR: false,
+                isStarred: false,
                 isSubscriptionBased: false,
                 isFinished: false,
                 isOnWishList: false,
@@ -453,6 +554,7 @@ export default {
             updatedGame.publicationYear = snapshot.val().publicationYear;
             updatedGame.isPSN = snapshot.val().isPSN;
             updatedGame.isPSVR = snapshot.val().isPSVR;
+            updatedGame.isStarred = snapshot.val().isStarred;
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
             updatedGame.isSubscriptionBased = snapshot.val().isSubscriptionBased;
             updatedGame.isFinished = snapshot.val().isFinished;
@@ -479,6 +581,7 @@ export default {
             this.editItem.publicationYear = game.publicationYear;
             this.editItem.isPSN = game.isPSN;
             this.editItem.isPSVR = game.isPSVR;
+            this.editItem.isStarred = game.isStarred;
             this.editItem.isSubscriptionBased = game.isSubscriptionBased;
             this.editItem.isFinished = game.isFinished;
             this.editItem.isOnWishList = game.isOnWishList;
@@ -488,7 +591,7 @@ export default {
             this.showManagerPopup = true;
         },
         updateGame() {
-            gamesRef.child(this.editingGame.id).update({
+            gamesRef.child(this.editingGame.id).set({
                 title: this.editItem.title,
                 platformId: this.editItem.platformId,
                 mediaId: this.editItem.mediaId,
@@ -501,6 +604,7 @@ export default {
                 isSubscriptionBased: this.editItem.isSubscriptionBased,
                 isFinished: this.editItem.isFinished,
                 isOnWishList: this.editItem.isOnWishList,
+                isStarred: this.editItem.isStarred,
                 posterImg: this.editItem.posterImg || "",
                 comment: this.editItem.comment || "",
             });
@@ -525,6 +629,7 @@ export default {
             this.editItem.isSubscriptionBased = false,
             this.editItem.isFinished = false,
             this.editItem.isOnWishList = false,
+            this.editItem.isStarred = false,
             this.editItem.posterImg = ""
             this.editItem.comment = ""
 
@@ -565,6 +670,24 @@ export default {
         },
         gamePassesMediaFilter(game) {
             return !this.filteredByMedia.length ? true : this.filteredByMedia.find(mediaId => game.mediaId === mediaId);
+        },
+        gamePassesFinishedFilter(game) {
+            return !this.filterByFinished ? true : game.isFinished;
+        },
+        gamePassesIsPSNFilter(game) {
+            return !this.filterByIsPSN ? true : game.isPSN;
+        },
+        gamePassesIsPSVRFilter(game) {
+            return !this.filterByIsPSVR ? true : game.isPSVR;
+        },
+        gamePassesIsSubscriptionBasedFilter(game) {
+            return !this.filterByIsSubscriptionBased ? true : game.isSubscriptionBased;
+        },
+        gamePassesIsOnWishListFilter(game) {
+            return !this.filterByIsOnWishList ? true : game.isOnWishList;
+        },
+        gamePassesIsStarredFilter(game) {
+            return !this.filterByIsStarred ? true : game.isStarred;
         }       
     },
     computed: {
@@ -588,6 +711,12 @@ export default {
                 .filter(this.gamePassesPlatformFilter)
                 .filter(this.gamePassesSearchByTitleFilter)
                 .filter(this.gamePassesMediaFilter)
+                .filter(this.gamePassesFinishedFilter)
+                .filter(this.gamePassesIsPSNFilter)
+                .filter(this.gamePassesIsPSVRFilter)
+                .filter(this.gamePassesIsSubscriptionBasedFilter)
+                .filter(this.gamePassesIsOnWishListFilter)
+                .filter(this.gamePassesIsStarredFilter)
             , this.sortedBy);
         },
         sortedPlatforms() {
