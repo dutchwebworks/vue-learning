@@ -347,7 +347,7 @@
 
                     <input
                         type="checkbox"
-                        v-model="editItem.isStarred"
+                        v-model="editItem.isFinished"
                         class="games__checkbox">
                     
                     <label
@@ -357,7 +357,7 @@
 
                     <input
                         type="checkbox"
-                        v-model="editItem.isFinished"
+                        v-model="editItem.isStarred"
                         class="games__checkbox">
                     
                     <label
@@ -581,7 +581,7 @@ export default {
             this.editItem.publicationYear = game.publicationYear;
             this.editItem.isPSN = game.isPSN;
             this.editItem.isPSVR = game.isPSVR;
-            this.editItem.isStarred = game.isStarred;
+            this.editItem.isStarred = game.isStarred == undefined ? false : true;
             this.editItem.isSubscriptionBased = game.isSubscriptionBased;
             this.editItem.isFinished = game.isFinished;
             this.editItem.isOnWishList = game.isOnWishList;
@@ -601,10 +601,10 @@ export default {
                 publicationYear: this.editItem.publicationYear || "",
                 isPSN: this.editItem.isPSN,
                 isPSVR: this.editItem.isPSVR,
+                isStarred: this.editItem.isStarred,
                 isSubscriptionBased: this.editItem.isSubscriptionBased,
                 isFinished: this.editItem.isFinished,
                 isOnWishList: this.editItem.isOnWishList,
-                isStarred: this.editItem.isStarred,
                 posterImg: this.editItem.posterImg || "",
                 comment: this.editItem.comment || "",
             });
@@ -626,10 +626,10 @@ export default {
             this.editItem.publicationYear = "",
             this.editItem.isPSN = false,
             this.editItem.isPSVR = false,
+            this.editItem.isStarred = false,
             this.editItem.isSubscriptionBased = false,
             this.editItem.isFinished = false,
             this.editItem.isOnWishList = false,
-            this.editItem.isStarred = false,
             this.editItem.posterImg = ""
             this.editItem.comment = ""
 
