@@ -662,28 +662,6 @@ export default {
                 });
             });
         },
-        getGenres() {
-            var self = this;
-            var genreList = [];
-            // debugger;
-
-            this.filteredGames.forEach(function(game){
-                if(game.genreIds != undefined) {
-                    game.genreIds.forEach(function(genreId){
-                        if(genreId != undefined) {
-                            genreList.push({
-                                id: genreId,
-                                title: self.genreType[genreId].title,
-                                shortTitle: self.genreType[genreId].shortTitle,
-                            });
-                        }
-                    });
-                }
-            });
-            
-            console.log(_.uniq(genreList, "title"));
-            return _.uniq(genreList, "title");
-        },
         gamePassesSearchByTitleFilter(game) {
             return this.searchByTitle == "" ? true : game.title.toLowerCase().includes(this.searchByTitle);
         },
@@ -737,13 +715,31 @@ export default {
         },  
         sortedGenres() {
             return _.sortBy(this.genreType, "title");
-        }  
+        },
+        sortedGenres() {
+            var self = this;
+            var genreList = {};
+
+            this.filteredGames.forEach(function(game){
+                if(game.genreIds != undefined) {
+                    game.genreIds.forEach(function(genreId){
+                        if(genreId != undefined && genreList[genreId] == undefined) {
+                            genreList[genreId] = {
+                                title: self.genreType[genreId].title,
+                                shortTitle: self.genreType[genreId].shortTitle,
+                            }
+                        }
+                    });
+                }
+            });
+
+            return _.sortBy(genreList, "title");
+        }
     },
     watch: {
         gamesLoaded(newValue, oldValue) {
             this.getPlatformIds();
             this.getMediaIds();
-            this.getGenres();
             this.$nextTick(function() { this.sortedBy = this.sortBy[0].value });
         }
     }
