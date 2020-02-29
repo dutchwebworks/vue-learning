@@ -662,6 +662,28 @@ export default {
                 });
             });
         },
+        getGenres() {
+            var self = this;
+            var genreList = [];
+            // debugger;
+
+            this.filteredGames.forEach(function(game){
+                if(game.genreIds != undefined) {
+                    game.genreIds.forEach(function(genreId){
+                        if(genreId != undefined) {
+                            genreList.push({
+                                id: genreId,
+                                title: self.genreType[genreId].title,
+                                shortTitle: self.genreType[genreId].shortTitle,
+                            });
+                        }
+                    });
+                }
+            });
+            
+            console.log(_.uniq(genreList, "title"));
+            return _.uniq(genreList, "title");
+        },
         gamePassesSearchByTitleFilter(game) {
             return this.searchByTitle == "" ? true : game.title.toLowerCase().includes(this.searchByTitle);
         },
@@ -690,19 +712,7 @@ export default {
             return !this.filterByIsStarred ? true : game.isStarred;
         }       
     },
-    computed: {
-        genres() {
-            var self = this;
-            var genreList = [];
-
-            return this.filteredGames.forEach(function(game){
-                game.genreIds.forEach(function(genre){
-                    if(genre != undefined || genre != "") {
-                        genreList.push(self.genreType[genre].title);
-                    }
-                });
-            });
-        },
+    computed: {        
         showingTotal() {
             return "Showing: " +  this.filteredGames.length + " result" + (this.filteredGames.length > 0 ? "s" : "");
         },
@@ -733,6 +743,7 @@ export default {
         gamesLoaded(newValue, oldValue) {
             this.getPlatformIds();
             this.getMediaIds();
+            this.getGenres();
             this.$nextTick(function() { this.sortedBy = this.sortBy[0].value });
         }
     }
