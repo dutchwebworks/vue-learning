@@ -705,6 +705,24 @@ const state = {
             "rating": 8.8,
             "title": "Peaky Blinders",
             "year": 2013
+        },
+        {
+            "description": "Far in a dystopian future, the human race has lost the sense of sight, and society has had to find new ways to interact, build, hunt, and to survive. All of that is challenged when a set of twins is born with sight.",
+            "genre": ["Action", "Drama", "Sci-Fi"],
+            "imdb": "https://www.imdb.com/title/tt7949218/",
+            "poster": "https://m.media-amazon.com/images/M/MV5BYWI2ZmM5ZTgtOTgxYS00MTQ4LThkMjQtZjBlNGM3NjQ5YTI5XkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_UX182_CR0,0,182,268_AL_.jpg",
+            "rating": 7.6,
+            "title": "See",
+            "year": 2019
+        },
+        {
+            "description": "After their father is murdered under mysterious circumstances, the three Locke siblings and their mother move into their ancestral home, Keyhouse, which they discover is full of magical keys that may be connected to their father's death.",
+            "genre": ["Drama", "Fantasy", "Horror"],
+            "imdb": "https://www.imdb.com/title/tt3007572",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNjZkNzY4M2ItOWY0Ni00Y2ViLWE1NjItOTIyYzZjMzg5M2E1XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_UX182_CR0,0,182,268_AL_.jpg",
+            "rating": 7.4,
+            "title": "Lock & Key",
+            "year": 2020
         }
     ]
 };
