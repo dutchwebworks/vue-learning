@@ -60,6 +60,25 @@
                 </li>
             </ul>
 
+            <h3 class="sub-heading">Filter by genre:</h3>
+
+            <ul
+                v-show="filteredGames.length >= 1"
+                class="filter-options">
+                <li 
+                    v-for="(genre, key, index) in sortedGenres"
+                    :key="index"
+                    class="filter-options__items paragraph">
+                    <label class="filter__label">
+                        <input
+                            type="checkbox"
+                            v-model.number="filteredByGenre" 
+                            :value="genre.id">
+                        {{ genre.title }}
+                    </label>
+                </li>
+            </ul>
+
             <h3 class="sub-heading">Filter by media:</h3>
 
             <ul
@@ -286,7 +305,7 @@
                     </label>
 
                     <input
-                        type="number"
+                        type="text"
                         v-model.number="editItem.purchasePrice"
                         class="games__input paragraph">
                     
@@ -296,8 +315,8 @@
                     </label>
 
                     <input
-                        type="number"
-                        v-model.number="editItem.purchaseYear"
+                        type="date"
+                        v-model="editItem.purchaseYear"
                         class="games__input paragraph">
                     
                     <label
@@ -306,8 +325,8 @@
                     </label>
 
                     <input
-                        type="number"
-                        v-model.number="editItem.publicationYear"
+                        type="date"
+                        v-model="editItem.publicationYear"
                         class="games__input paragraph">
                     
                     <label
@@ -456,6 +475,7 @@ export default {
             platforms: [],
             media: [],          
             filteredByPlatform: [],
+            filteredByGenre: [],
             filteredByMedia: [],
             filterByFinished: false,
             filterByIsPSN: false,
@@ -668,6 +688,18 @@ export default {
         gamePassesPlatformFilter(game) {
             return !this.filteredByPlatform.length ? true : this.filteredByPlatform.find(platformId => game.platformId === platformId);
         },
+        gamePassesGenreFilter(game) {
+            console.log(game.genreIds);
+            console.log(this.filteredByGenre);
+
+            if(!this.filteredByGenre.length) {
+                return true;
+            } else if(game.genreIds != undefined){
+                game.genreIds.forEach(genreId => {
+                    return this.filteredByGenre.includes(genreId);
+                });
+            }           
+        },
         gamePassesMediaFilter(game) {
             return !this.filteredByMedia.length ? true : this.filteredByMedia.find(mediaId => game.mediaId === mediaId);
         },
@@ -705,6 +737,7 @@ export default {
                 .filter(this.gamePassesIsSubscriptionBasedFilter)
                 .filter(this.gamePassesIsOnWishListFilter)
                 .filter(this.gamePassesIsStarredFilter)
+                .filter(this.gamePassesGenreFilter)
             , this.sortedBy);
         },
         sortedPlatforms() {
@@ -714,17 +747,15 @@ export default {
             return _.sortBy(this.media, "title");
         },  
         sortedGenres() {
-            return _.sortBy(this.genreType, "title");
-        },
-        sortedGenres() {
             var self = this;
             var genreList = {};
 
             this.filteredGames.forEach(function(game){
                 if(game.genreIds != undefined) {
                     game.genreIds.forEach(function(genreId){
-                        if(genreId != undefined && genreList[genreId] == undefined) {
+                        if(genreId != undefined && genreList[genreId] == undefined) {                            
                             genreList[genreId] = {
+                                id: genreId,
                                 title: self.genreType[genreId].title,
                                 shortTitle: self.genreType[genreId].shortTitle,
                             }
@@ -733,7 +764,7 @@ export default {
                 }
             });
 
-            return _.sortBy(genreList, "title");
+            return genreList;
         }
     },
     watch: {
