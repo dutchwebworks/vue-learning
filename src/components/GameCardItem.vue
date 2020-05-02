@@ -1,6 +1,7 @@
 <template>
     <article
         class="games__grid-item"
+        :class="{ 'is-digital' : game.mediaId == 1, 'is-physical' : game.mediaId == 2 }"
         :title="game.title">
         <router-link
             :to="{ name: 'GamesDetailPage', params: { game: game, title: $options.filters.slugify(game.title) } }">
@@ -21,6 +22,12 @@
                 {{ genreType[genreId].shortTitle }}
             </li>
         </ul>
+
+        <small 
+            v-if="game.purchasePrice != ''"
+            class="games__price">
+            {{ game.purchasePrice | euroCurrency }}
+        </small>
 
         <div class="games__grid-nav">
             <button 
@@ -84,7 +91,15 @@ export default {
     flex-direction: column;
     padding: 20px 20px;
     border-radius: 8px;
-    background-color: map-get($colors, 05);
+    background-color: map-get($colors, 05);    
+
+    &.is-digital {
+        // background-color: map-get($colors, 04);
+    }
+
+    &.is-physical {
+        // background-color: map-get($colors, 05);
+    }
 }
 
 .games__title {
@@ -139,6 +154,15 @@ export default {
 .games__genre-list {
     margin: 0 0 20px 20px; 
     padding: 0;
+}
+
+.games__price {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    color: map-get($colors, 04);
 }
 
 // ---------------------------------------------
