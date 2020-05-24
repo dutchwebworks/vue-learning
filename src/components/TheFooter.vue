@@ -1,6 +1,6 @@
 <template>
 	<footer class="footer">
-		<p class="footer__body">By Dennis Burger, october 2019</p>
+		<p class="footer__body">By Dennis Burger, october 2020</p>
 		<p class="footer__body"><a href="https://github.com/dutchwebworks/vue-learning" target="_blank">View on Github</a></p>
 	</footer>
 </template>
