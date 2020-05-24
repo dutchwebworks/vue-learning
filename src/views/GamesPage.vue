@@ -286,8 +286,8 @@
                     </label>
 
                     <input
-                        type="number"
-                        v-model.number="editItem.purchasePrice"
+                        type="text"
+                        v-model="editItem.purchasePrice"
                         class="games__input paragraph">
                     
                     <label
@@ -296,8 +296,8 @@
                     </label>
 
                     <input
-                        type="number"
-                        v-model.number="editItem.purchaseYear"
+                        type="text"
+                        v-model="editItem.purchaseYear"
                         class="games__input paragraph">
                     
                     <label
@@ -306,8 +306,8 @@
                     </label>
 
                     <input
-                        type="number"
-                        v-model.number="editItem.publicationYear"
+                        type="text"
+                        v-model="editItem.publicationYear"
                         class="games__input paragraph">
                     
                     <label
