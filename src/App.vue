@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router';
-import Header from "./components/TheHeader.vue";
-import Footer from "./components/TheFooter.vue";
-</script>
-
 <template>
     <Header />
 
@@ -13,5 +7,11 @@ import Footer from "./components/TheFooter.vue";
 
     <Footer />
 </template>
+
+<script setup lang="ts">
+import { RouterView } from 'vue-router';
+import Header from "./components/TheHeader.vue";
+import Footer from "./components/TheFooter.vue";
+</script>
 
 <style scoped lang="scss"></style>
