@@ -1,9 +1,3 @@
-.dark-mode {
-    --body-bg-color: #333;
-    --body-text-color: #fff;
-    --body-text-color-alt: #aaa;
-}
-
 body {
     font-family: var(--primary-font);
     font-size: 1rem;
@@ -50,4 +44,10 @@ img {
 
 main img {
     border-radius: 8px;
+}
+
+.dark-mode {
+    --body-bg-color: #333;
+    --body-text-color: #fff;
+    --body-text-color-alt: #aaa;
 }
