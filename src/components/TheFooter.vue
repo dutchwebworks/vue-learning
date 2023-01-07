@@ -1,6 +1,6 @@
 ﻿<template>
     <footer>
-        <div>&copy; Dutchwebworks, 2023</div>
+        <div>&copy; Dutchwebworks, januari 2023</div>
         <div><a href="https://github.com/dutchwebworks/vue-learning" target="_blank">View on Github</a></div>
     </footer>
 </template>
