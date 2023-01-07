@@ -16,7 +16,7 @@ import Footer from "@/components/TheFooter.vue";
 
 <style scoped lang="scss">
 .container {
-    max-width: 1200px;
+    max-width: var(--site-max-width);
     margin: 20px auto 0;
     padding: 0 10px;
 }
