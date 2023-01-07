@@ -1,25 +1,33 @@
+.dark-mode {
+    --body-bg-color: #333;
+    --body-text-color: #fff;
+    --body-text-color-alt: #aaa;
+}
+
 body {
     font-family: var(--primary-font);
     font-size: 1rem;
     line-height: 1.5;
     margin: 0;
     background-color: var(--body-bg-color);
-    transition: background-color .5s, color .5s;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 300;
+    margin: 0 0 10px 0;
 }
 
 h1 {
-    margin-bottom: 10px;
     color: var(--primary-brand-color);
     font-size: 3rem;
-    transition: color .5s;
 }
 
 h2 {
     color: var(--secondary-brand-color);
     font-size: 2rem;
-    border-bottom: 1px solid var(--body-text-color);
-    padding-bottom: 10px;
-    transition: border-bottom-color .5s, color .5s;
 }
 
 h2 a {
@@ -34,7 +42,6 @@ p {
     color: var(--body-text-color);
     font-size: 1.2rem;
     line-height: 1.5;
-    transition: color .5s;
 }
 
 img {
@@ -44,10 +51,4 @@ img {
 
 main img {
     border-radius: 8px;
-}
-
-.dark-mode {
-    --body-bg-color: #333;
-    --body-text-color: #fff;
-    --body-text-color-alt: #aaa;
 }
