@@ -1,29 +1,22 @@
-const Checkout = () => import("@/views/Catalog/Checkout.vue");
-const Detail = () => import("@/views/Catalog/Detail.vue");
-const Index = () => import("@/views/Catalog/Index.vue");
-const ThankYou = () => import("@/views/Catalog/ThankYou.vue");
-
-const catalogRouting = [
+export default [
     {
         path: "checkout",
-        name: "CatalogCheckout",
-        component: Checkout
+        name: "catalog-checkout",
+        component: () => import("@/views/Catalog/Checkout.vue"),
     },
     {
-        path: "detail",
-        name: "CatalogDetail",
-        component: Detail
+        path: ":slug",
+        name: "catalog-detail",
+        component: () => import("@/views/Catalog/Detail.vue"),
     },
     {
         path: "",
-        name: "CatalogIndex",
-        component: Index
+        name: "catalog-overview",
+        component: () => import("@/views/Catalog/Index.vue"),
     },
     {
         path: "thank-you",
-        name: "CatalogThankYou",
-        component: ThankYou
+        name: "catalog-thank-you",
+        component: () => import("@/views/Catalog/ThankYou.vue"),
     },
 ];
-
-export default catalogRouting

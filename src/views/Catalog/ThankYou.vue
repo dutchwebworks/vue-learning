@@ -1,15 +1,13 @@
 <template>
     <main>
-        <CatalogMenu />
-
         <h1>Catalog: Thank You</h1>
 
-        <p>Product thank you page</p>
+        <p><RouterLink :to="{ name: 'catalog-overview' }">Overview</RouterLink></p>
+
+        <p>Thank you for you order!</p>
     </main>
 </template>
 
-<script setup lang="ts">
-import CatalogMenu from "@/components/CatalogMenu.vue";
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss"></style>

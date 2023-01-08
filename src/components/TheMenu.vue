@@ -1,20 +1,25 @@
 <template>
     <nav>
         <menu>
-            <li>
-                <RouterLink to="/">Home</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/catalog">Catalog</RouterLink>
-            </li>
-            <li>
-                <RouterLink to="/about">About</RouterLink>
+            <li v-for="(item, index) in navMenu" :key="index">
+                <RouterLink :to="{ name: item.routeName }">{{item.label}}</RouterLink>
             </li>
         </menu>
     </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const navMenu = [
+    {
+        label: "Home",
+        routeName: "home"
+    },
+    {
+        label: "About",
+        routeName: "about"
+    }
+]
+</script>
 
 <style scoped lang="scss">
 menu {
