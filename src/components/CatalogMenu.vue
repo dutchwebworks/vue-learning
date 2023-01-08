@@ -2,13 +2,16 @@
     <nav>
         <menu>
             <li>
-                <RouterLink to="/">Home</RouterLink>
-            </li>
-            <li>
                 <RouterLink to="/catalog">Catalog</RouterLink>
             </li>
             <li>
-                <RouterLink to="/about">About</RouterLink>
+                <RouterLink to="/catalog/detail">Detail</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/catalog/checkout">Checkout</RouterLink>
+            </li>
+            <li>
+                <RouterLink to="/catalog/thank-you">Thank You</RouterLink>
             </li>
         </menu>
     </nav>
