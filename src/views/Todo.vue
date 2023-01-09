@@ -22,34 +22,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 
+const shoppingListLocalStorageKey = "shoppingList";
 let newItem = ref("");
-
-const shoppingList = ref([
-    { checked: false, label: "Cheese" },
-    { checked: false, label: "Milk" }
-]);
-
 let nrOfItems = computed(() => shoppingList.value.length);
+const shoppingList = ref([]);
+
+onBeforeMount(() => {
+    if (localStorage.getItem(shoppingListLocalStorageKey) === null) {
+        shoppingList.value = [
+            { checked: false, label: "Cheese" },
+            { checked: false, label: "Milk" }
+        ];
+    } else {
+        shoppingList.value = JSON.parse(localStorage.getItem(shoppingListLocalStorageKey));
+    }
+});
 
 function addItemToShoppingList() {
     if(newItem.value != "") {
         shoppingList.value.push({ checked: false, label: newItem.value});
         newItem.value = "";
+        saveShoppingList();
     }
 }
 
 function removeItemFromShoppingList(name: string) {
     shoppingList.value = shoppingList.value.filter(item => item.label != name);
+    saveShoppingList();
 }
 
 function markItemOnShoppingList(name: string) {
     shoppingList.value.forEach((item) => {
         if(item.label === name) {
             item.checked = !item.checked;
+            saveShoppingList();
         }
     });
+}
+
+function saveShoppingList() {
+    localStorage.setItem(shoppingListLocalStorageKey, JSON.stringify(shoppingList.value));
 }
 </script>
 
