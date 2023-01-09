@@ -11,22 +11,22 @@
 </template>
 
 <script setup lang="ts">
-const productList = [
+const productList: { label: string, slug: string}[] = [
     {
         label: "Sony PlayStation 3",
-        slug: "ps3"
+        slug: "playstation-3"
     },
     {
         label: "Sony PlayStation 4",
-        slug: "ps4"
+        slug: "playstation-4"
     },
     {
         label: "Sony PlayStation 4 Pro",
-        slug: "ps4-pro"
+        slug: "playstation-4-pro"
     },
     {
         label: "Sony PlayStation 5",
-        slug: "ps5"
+        slug: "playstation-5"
     }
 ];
 </script>

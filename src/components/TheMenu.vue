@@ -1,7 +1,7 @@
 <template>
     <nav>
         <menu>
-            <li v-for="(item, index) in navMenu" :key="index">
+            <li v-for="item in navMenu" :key="item.routeName">
                 <RouterLink :to="{ name: item.routeName }">{{item.label}}</RouterLink>
             </li>
         </menu>
@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-const navMenu = [
+const navMenu: { label: string, routeName: string }[] = [
     {
         label: "Home",
         routeName: "home"
