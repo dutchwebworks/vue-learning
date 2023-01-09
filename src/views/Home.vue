@@ -5,6 +5,8 @@
         <nav>
             <ul class="overview">
                 <li class="overview__item"><RouterLink :to="{ name: 'catalog-overview' }">Routing</RouterLink></li>
+                <li class="overview__item"><RouterLink :to="{ name: 'form-simple' }">Form simple</RouterLink></li>
+                <li class="overview__item"><RouterLink :to="{ name: 'to-do' }">Todo</RouterLink></li>
             </ul>
         </nav>
     </main>

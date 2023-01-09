@@ -14,6 +14,16 @@ const routes = [
         component: () => import("@/views/About.vue")
     },
     {
+        path: "/form-simple",
+        name: "form-simple",
+        component: () => import("@/views/FormSimple.vue")
+    },
+    {
+        path: "/to-do",
+        name: "to-do",
+        component: () => import("@/views/Todo.vue")
+    },
+    {
         path: "/catalog",
         name: "catalog",
         children: catalogRouting

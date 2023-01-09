@@ -1,8 +1,8 @@
 <template>
     <nav>
         <menu>
-            <li v-for="item in navMenu" :key="item.routeName">
-                <RouterLink :to="{ name: item.routeName }">{{item.label}}</RouterLink>
+            <li v-for="{label, routeName: url} in navMenu" :key="url">
+                <RouterLink :to="{ name: url }">{{ label }}</RouterLink>
             </li>
         </menu>
     </nav>

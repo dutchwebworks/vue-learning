@@ -3,15 +3,17 @@
         <h1>Catalog overview</h1>
 
         <ul class="catalogList">
-            <li v-for="product in productList" :key="product.slug">
-                <RouterLink :to="{ name: 'catalog-detail', params: { slug: product.slug } }">{{ product.label }}</RouterLink>
+            <li v-for="{label, slug} in productList" :key="slug">
+                <RouterLink :to="{ name: 'catalog-detail', params: { slug: slug } }">{{ label }}</RouterLink>
             </li>
         </ul>
     </main>
 </template>
 
 <script setup lang="ts">
-const productList: { label: string, slug: string}[] = [
+import { ref } from "vue";
+
+const productList = ref([
     {
         label: "Sony PlayStation 3",
         slug: "playstation-3"
@@ -28,7 +30,7 @@ const productList: { label: string, slug: string}[] = [
         label: "Sony PlayStation 5",
         slug: "playstation-5"
     }
-];
+]);
 </script>
 
 <style scoped lang="scss">
