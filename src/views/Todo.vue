@@ -11,8 +11,7 @@
 
         <ul v-if="nrOfItems > 0" class="shopping-list">
             <li v-for="{checked, label} in shoppingList" :key="label" @click="markItemOnShoppingList(label)" title="Mark item" :class="{ 'is-checked': checked }" class="shopping-list__item">
-                <s v-if="checked">{{ label }}</s>
-                <span v-else>{{ label }}</span>
+                <component :is="checked ? 's' : 'span'">{{ label }}</component>
 
                 <button @click.prevent="removeItemFromShoppingList(label)" title="Remove" class="shopping-list__btn-remove">&times;</button>
             </li>
