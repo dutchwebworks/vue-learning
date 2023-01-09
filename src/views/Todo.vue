@@ -1,18 +1,20 @@
 <template>
     <main>
-        <h1>Todo Pomodore</h1>
+        <h1>Todo shopping list</h1>
 
         <form @submit.prevent="addItemToShoppingList">
             <input type="text" v-model="newItem" id="newItem" placeholder="Add Item">
-            <input type="submit" value="+">
+            <input type="submit" value="&plus;">
         </form>
 
-        <h2>Shopping list</h2>
+        <h2 v-if="nrOfItems > 0">Items: {{ nrOfItems }}</h2>
 
-        <ul v-if="shoppingList.length > 0" class="shopping-list">
-            <li v-for="name in shoppingList" class="shopping-list__item">
-                {{ name }}
-                <button @click="removeItemFromShoppingList(name)" title="Remove" class="shopping-list__btn-remove">&times;</button>
+        <ul v-if="nrOfItems > 0" class="shopping-list">
+            <li v-for="{checked, label} in shoppingList" :key="label" @click="markItemOnShoppingList(label)" title="Mark item" :class="{ 'is-checked': checked }" class="shopping-list__item">
+                <s v-if="checked">{{ label }}</s>
+                <span v-else>{{ label }}</span>
+
+                <button @click.prevent="removeItemFromShoppingList(label)" title="Remove" class="shopping-list__btn-remove">&times;</button>
             </li>
         </ul>
 
@@ -21,20 +23,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 let newItem = ref("");
-const shoppingList = ref(["Cheese", "Milk"]);
+
+const shoppingList = ref([
+    { checked: false, label: "Cheese" },
+    { checked: false, label: "Milk" }
+]);
+
+let nrOfItems = computed(() => shoppingList.value.length);
 
 function addItemToShoppingList() {
     if(newItem.value != "") {
-        shoppingList.value.push(newItem.value);
+        shoppingList.value.push({ checked: false, label: newItem.value});
         newItem.value = "";
     }
 }
 
 function removeItemFromShoppingList(name: string) {
-    shoppingList.value.splice(shoppingList.value.indexOf(name), 1);
+    shoppingList.value = shoppingList.value.filter(item => item.label != name);
+}
+
+function markItemOnShoppingList(name: string) {
+    shoppingList.value.forEach((item) => {
+        if(item.label === name) {
+            item.checked = !item.checked;
+        }
+    });
 }
 </script>
 
@@ -86,10 +102,16 @@ input[type="submit"] {
     color: var(--body-text-color-alt);
     background-color: #ccc;
     transition: background-color .3s;
-    // cursor: pointer;
+    cursor: pointer;
 
     &:hover {
-        // background-color: #eee;
+        background-color: #eee;
+    }
+
+    &.is-checked {
+        s {
+            color: green;
+        }
     }
 }
 
