@@ -24,6 +24,11 @@ const routes = [
         component: () => import("@/views/Todo.vue")
     },
     {
+        path: "/counter",
+        name: "counter",
+        component: () => import("@/views/Counter.vue")
+    },
+    {
         path: "/catalog",
         name: "catalog",
         children: catalogRouting

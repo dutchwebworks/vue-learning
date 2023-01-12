@@ -4,15 +4,35 @@
 
         <nav>
             <ul class="overview">
-                <li class="overview__item"><RouterLink :to="{ name: 'catalog-overview' }">Routing</RouterLink></li>
-                <li class="overview__item"><RouterLink :to="{ name: 'form-simple' }">Form simple</RouterLink></li>
-                <li class="overview__item"><RouterLink :to="{ name: 'to-do' }">Todo</RouterLink></li>
+                <li v-for="{label, routerName} in navItems" :key="routerName" class="overview__item"><RouterLink :to="{ name: routerName }">{{ label }}</RouterLink></li>
             </ul>
         </nav>
     </main>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+import { useCounterStore } from "@/stores/CounterStore";
+
+const navItems = ref([
+    {
+        label: "Routing",
+        routerName: "catalog-overview"
+    },
+    {
+        label: "Form simple",
+        routerName: "form-simple"
+    },
+    {
+        label: "Todo",
+        routerName: "to-do"
+    },
+    {
+        label: "Counter",
+        routerName: "counter"
+    }
+]);
+</script>
 
 <style scoped lang="scss">
 .overview {
