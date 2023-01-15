@@ -17,9 +17,9 @@
 import { useCounterStore } from "@/stores/CounterStore";
 import { storeToRefs } from "pinia";
 
-const store = useCounterStore();
-const { counter } = storeToRefs(store);
-const { incrementCounter, decrementCounter } = store;
+const counterStore = useCounterStore();
+const { counter } = storeToRefs(counterStore);
+const { incrementCounter, decrementCounter } = counterStore;
 </script>
 
 <style scoped lang="scss">
