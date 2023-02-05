@@ -2,18 +2,20 @@
     <main>
         <h1>Todo shopping list</h1>
 
-        <form @submit.prevent="addItemToShoppingList">
-            <input type="text" v-model="newItem" id="newItem" placeholder="Add Item">
-            <input type="submit" value="&plus;">
+        <form @submit.prevent="addTodo">
+            <input type="text" v-model.trim="newItem" id="newItem" placeholder="Add Item">
+            <input type="submit" value="Add todo">
         </form>
 
-        <h2 v-if="nrOfItems > 0">Items: {{ nrOfItems }}</h2>
+        <h2>Items: {{ nrOfTodos }}</h2>
+        <p>Checked: {{ nrOfCheckedTodos }}</p>
+        <p>Unchecked: {{ nrOfUncheckedTodos }}</p>
 
-        <ul v-if="nrOfItems > 0" class="shopping-list">
-            <li v-for="{checked, label} in shoppingList" :key="label" @click="markItemOnShoppingList(label)" title="Mark item" :class="{ 'is-checked': checked }" class="shopping-list__item">
+        <ul v-if="nrOfTodos > 0" class="shopping-list">
+            <li v-for="{checked, label} in todos" :key="label" @click="todoStore.markTodo(label)" title="Mark item" :class="{ 'is-checked': checked }" class="shopping-list__item">
                 <component :is="checked ? 's' : 'span'">{{ label }}</component>
 
-                <button @click.prevent="removeItemFromShoppingList(label)" title="Remove" class="shopping-list__btn-remove">&times;</button>
+                <button @click.prevent="todoStore.removeTodo(label)" title="Remove" class="shopping-list__btn-remove">&times;</button>
             </li>
         </ul>
 
@@ -22,48 +24,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, onBeforeMount, inject } from "vue";
+import { storeToRefs } from "pinia";
+import { useTodoStore } from "@/stores/TodoStore";
 
-const shoppingListLocalStorageKey = "shoppingList";
+const storageKey = inject("shoppingListKey");
+const todoStore =  useTodoStore();
+const { todos, nrOfTodos, nrOfCheckedTodos, nrOfUncheckedTodos } = storeToRefs(todoStore);
 let newItem = ref("");
-let nrOfItems = computed(() => shoppingList.value.length);
-const shoppingList = ref([]);
 
 onBeforeMount(() => {
-    if (localStorage.getItem(shoppingListLocalStorageKey) === null) {
-        shoppingList.value = [
-            { checked: false, label: "Cheese" },
-            { checked: false, label: "Milk" }
-        ];
+    if (localStorage.getItem(storageKey) === null) {
+        todoStore.fill();
     } else {
-        shoppingList.value = JSON.parse(localStorage.getItem(shoppingListLocalStorageKey));
+        todoStore.fill(JSON.parse(localStorage.getItem(storageKey)));
     }
 });
 
-function addItemToShoppingList() {
-    if(newItem.value != "") {
-        shoppingList.value.push({ checked: false, label: newItem.value});
-        newItem.value = "";
-        saveShoppingList();
-    }
-}
-
-function removeItemFromShoppingList(name: string) {
-    shoppingList.value = shoppingList.value.filter(item => item.label != name);
-    saveShoppingList();
-}
-
-function markItemOnShoppingList(name: string) {
-    shoppingList.value.forEach((item) => {
-        if(item.label === name) {
-            item.checked = !item.checked;
-            saveShoppingList();
-        }
-    });
-}
-
-function saveShoppingList() {
-    localStorage.setItem(shoppingListLocalStorageKey, JSON.stringify(shoppingList.value));
+function addTodo() {
+    todoStore.addTodo(newItem.value);
+    newItem.value = "";
 }
 </script>
 
